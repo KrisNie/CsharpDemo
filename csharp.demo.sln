@@ -1,9 +1,10 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp.console.demo", "csharp_console_demo\csharp.console.demo.csproj", "{F7A6D57D-6545-4B94-9CA8-00C5902E5243}"
+VisualStudioVersion = 15.0.28307.757
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "csharp.console.demo", "csharp_console_demo\csharp.console.demo.csproj", "{F7A6D57D-6545-4B94-9CA8-00C5902E5243}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnetcore.mvc.demo", "dotnetcore.mvc.demo\dotnetcore.mvc.demo.csproj", "{3D95ACDE-BEFB-4BC2-866A-D0E7476563F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetcore.mvc.demo", "dotnetcore.mvc.demo\dotnetcore.mvc.demo.csproj", "{3D95ACDE-BEFB-4BC2-866A-D0E7476563F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,5 +20,11 @@ Global
 		{3D95ACDE-BEFB-4BC2-866A-D0E7476563F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D95ACDE-BEFB-4BC2-866A-D0E7476563F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D95ACDE-BEFB-4BC2-866A-D0E7476563F1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {109AF702-A677-4DFF-87AB-01A64B070974}
 	EndGlobalSection
 EndGlobal
