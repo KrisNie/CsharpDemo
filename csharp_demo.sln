@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp.console.demo", "csharp_console_demo\csharp.console.demo.csproj", "{F7A6D57D-6545-4B94-9CA8-00C5902E5243}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp.console.demo", "csharp.console.demo\csharp.console.demo.csproj", "{F7A6D57D-6545-4B94-9CA8-00C5902E5243}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnetcore.mvc.demo", "dotnetcore.mvc.demo\dotnetcore.mvc.demo.csproj", "{3D95ACDE-BEFB-4BC2-866A-D0E7476563F1}"
 EndProject
