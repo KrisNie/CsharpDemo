@@ -1,5 +1,5 @@
 ﻿using System;
-namespace csharp_console_demo
+namespace csharp.console.demo.DesignPatterns
 {
     public sealed class Singleton
     {
