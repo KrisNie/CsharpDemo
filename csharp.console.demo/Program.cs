@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace csharp_console_demo
+namespace csharp.console.demo
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {
