@@ -1,0 +1,11 @@
+@model GirlModel
+@{
+    ViewData["Title"] = "say hello to my girl";
+}
+
+<div class="text-center">
+    <h1 class="display-4">yooo</h1>
+    <a href="~/Girl/Welcome?name=@ViewData["GirlName"]&age=@ViewData["GirlAge"]">
+        @ViewData["GirlAge"]-years-old @ViewData["GirlName"]
+    </a>
+</div>

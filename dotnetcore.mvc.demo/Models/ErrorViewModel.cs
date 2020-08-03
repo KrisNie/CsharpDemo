@@ -1,5 +1,3 @@
-using System;
-
 namespace dotnetcore.mvc.demo.Models
 {
     public class ErrorViewModel
