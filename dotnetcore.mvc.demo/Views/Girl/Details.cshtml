@@ -1,0 +1,39 @@
+@model dotnetcore.mvc.demo.DataAccess.Entity.Girl
+
+@{
+    ViewData["Title"] = "Details";
+}
+<dt class="col-sm-2">
+    @Html.DisplayNameFor(model => model.Name)
+</dt>
+<dd class="col-sm-10">
+    @Html.DisplayFor(model => model.Name)
+</dd>
+<dt class="col-sm-2">
+    @Html.DisplayNameFor(model => model.Age)
+</dt>
+<dd class="col-sm-10">
+    @Html.DisplayFor(model => model.Age)
+</dd>
+<dt class="col-sm-2">
+    @Html.DisplayNameFor(model => model.PhoneNumber)
+</dt>
+<dd class="col-sm-10">
+    @Html.DisplayFor(model => model.PhoneNumber)
+</dd>
+<dd class="col-sm-10">
+    <table class="table">
+        <tr>
+            <th>BelovedName</th>
+            <th>BelovedInfo</th>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(model => model.BelovedName)
+            </td>
+            <td>
+                null
+            </td>
+        </tr>
+    </table>
+</dd>
