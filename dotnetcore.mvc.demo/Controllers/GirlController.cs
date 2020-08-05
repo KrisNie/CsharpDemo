@@ -1,6 +1,8 @@
 using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using dotnetcore.mvc.demo.DataAccess.Base;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnetcore.mvc.demo.Controllers
 {
@@ -19,12 +21,10 @@ namespace dotnetcore.mvc.demo.Controllers
         // you will see "This is my default action..." on page whose URL is "https://localhost:5001/Girl"
 
         // GET: /Girl/
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // todo: use mysql to show girl's information
-            ViewData["GirlName"] = "hyomin";
-            ViewData["GirlAge"] = 18;
-            return View();
+            return View(await _context.Girls.ToListAsync());
         }
 
         // GET: /Girl/Welcome/ 
@@ -32,6 +32,25 @@ namespace dotnetcore.mvc.demo.Controllers
         {
             // say hello to my girl 
             return HtmlEncoder.Default.Encode($"Hello my {age}-years-old girl {name}");
+        }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var girl = await _context.Girls
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (girl == null)
+            {
+                return NotFound();
+            }
+
+            return View(girl);
         }
     }
 }
