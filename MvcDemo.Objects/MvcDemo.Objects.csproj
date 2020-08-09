@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>MvcDemo.Object</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Dtos" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MvcDemo.Data\MvcDemo.Data.csproj" />
+    </ItemGroup>
+
+</Project>
