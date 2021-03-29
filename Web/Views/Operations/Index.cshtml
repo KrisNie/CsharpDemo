@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = "DI Service lifetimes";
+}
+
+<div class="text-center">
+    <h3>this page to show you the Service lifetimes' differents between Transient/Scoped/Singleton...</h3>
+</div>
+<div>
+    <h4>
+        OperationsController
+    </h4>
+    <div class="text-center">
+        <p>
+            <b>Transient</b> @ViewBag.Transient.OperationId
+        </p>
+        <p>
+            <b>Scoped</b> @ViewBag.Scoped.OperationId
+        </p>
+        <p>
+            <b>Singleton</b> @ViewBag.Singleton.OperationId
+        </p>
+        <p>
+            <b>SingletonInstance</b> @ViewBag.SingletonInstance.OperationId
+        </p>
+    </div>
+
+    <h4>
+        OperationService
+    </h4>
+    <div class="text-center">
+        <p>
+            <b>Transient</b> @ViewBag.Service.TransientOperation.OperationId
+        </p>
+        <p>
+            <b>Scoped</b> @ViewBag.Service.ScopedOperation.OperationId
+        </p>
+        <p>
+            <b>Singleton</b> @ViewBag.Service.SingletonOperation.OperationId
+        </p>
+        <p>
+            <b>SingletonInstance</b> @ViewBag.Service.SingletonInstanceOperation.OperationId
+        </p>
+    </div>
+
+</div>
