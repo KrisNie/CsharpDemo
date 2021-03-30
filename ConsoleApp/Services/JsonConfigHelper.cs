@@ -9,14 +9,13 @@ namespace Services
 {
     public class Config
     {
-        public string sqlConnectionString;
+        public string SqlConnectionString;
     }
 
     public class JsonConfigHelper
     {
-
         public Config Config { get; }
-        
+
         public JsonConfigHelper(string path)
         {
             using var r = new StreamReader(path);
