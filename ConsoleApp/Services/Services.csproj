@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>9</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.CodeDom" Version="5.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CSI.App">
+      <HintPath>..\..\..\..\..\..\..\..\ToolSet\IDOXCA\KRIS_DALS\CSI.App.dll</HintPath>
+    </Reference>
+    <Reference Include="CSI.CRUD">
+      <HintPath>..\..\..\..\..\..\..\..\ToolSet\IDOXCA\KRIS_DALS\CSI.CRUD.dll</HintPath>
+    </Reference>
+    <Reference Include="CSI.Data">
+      <HintPath>..\..\..\..\..\..\..\..\ToolSet\IDOXCA\KRIS_DALS\CSI.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="CSI.Data.SQL.UDDT">
+      <HintPath>..\..\..\..\..\..\..\..\ToolSet\IDOXCA\KRIS_DALS\CSI.Data.SQL.UDDT.dll</HintPath>
+    </Reference>
+    <Reference Include="CSI.Interfaces">
+      <HintPath>..\..\..\..\..\..\..\..\ToolSet\IDOXCA\KRIS_DALS\CSI.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="CSI.Logger">
+      <HintPath>..\..\..\..\..\..\..\..\ToolSet\IDOXCA\KRIS_DALS\CSI.Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="CSI.MG">
+      <HintPath>..\..\..\..\..\..\..\..\ToolSet\IDOXCA\KRIS_DALS\CSI.MG.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
