@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Services
 {
@@ -15,7 +12,7 @@ namespace Services
         //     DataSource = "LOCALHOST", UserID = "sa", Password = "", InitialCatalog = ""
         // }.ToString();
         private static string ConnectionString { get; } =
-            new JsonConfigHelper("../../../../Resource/Config.json").Config.sqlConnectionString;
+            new JsonConfigHelper("../../../../Resource/Config.json").Config.SqlConnectionString;
 
         #region Public method
 
@@ -26,20 +23,20 @@ namespace Services
             return obj == null ? 1 : int.Parse(obj.ToString() ?? string.Empty);
         }
 
-        public static bool Exists(string strSql, params SqlParameter[] cmdParms)
+        public static bool Exists(string strSql, params SqlParameter[] cmdParams)
         {
-            var obj = GetSingle(strSql, cmdParms);
-            int cmdresult;
-            if ((object.Equals(obj, null)) || (object.Equals(obj, System.DBNull.Value)))
+            var obj = GetSingle(strSql, cmdParams);
+            int cmdResult;
+            if ((Equals(obj, null)) || (Equals(obj, DBNull.Value)))
             {
-                cmdresult = 0;
+                cmdResult = 0;
             }
             else
             {
-                cmdresult = int.Parse(obj.ToString() ?? string.Empty);
+                cmdResult = int.Parse(obj.ToString() ?? string.Empty);
             }
 
-            return cmdresult != 0;
+            return cmdResult != 0;
         }
 
         #endregion
@@ -56,10 +53,10 @@ namespace Services
                 var rows = cmd.ExecuteNonQuery();
                 return rows;
             }
-            catch (System.Data.SqlClient.SqlException E)
+            catch (SqlException ex)
             {
                 connection.Close();
-                throw new Exception(E.Message);
+                throw new Exception(ex.Message);
             }
         }
 
@@ -67,277 +64,243 @@ namespace Services
         {
             using var conn = new SqlConnection(ConnectionString);
             conn.Open();
-            SqlCommand cmd = new SqlCommand();
-            cmd.Connection = conn;
-            SqlTransaction tx = conn.BeginTransaction();
+            var cmd = new SqlCommand {Connection = conn};
+            var tx = conn.BeginTransaction();
             cmd.Transaction = tx;
             try
             {
-                for (int n = 0; n < sqlStringList.Count; n++)
+                foreach (var t in sqlStringList)
                 {
-                    string strsql = sqlStringList[n].ToString();
-                    if (strsql.Trim().Length > 1)
-                    {
-                        cmd.CommandText = strsql;
-                        cmd.ExecuteNonQuery();
-                    }
+                    var sqlString = t.ToString();
+                    if (sqlString != null && sqlString.Trim().Length <= 1) continue;
+                    cmd.CommandText = sqlString;
+                    cmd.ExecuteNonQuery();
                 }
 
                 tx.Commit();
             }
-            catch (System.Data.SqlClient.SqlException E)
+            catch (SqlException ex)
             {
                 tx.Rollback();
-                throw new Exception(E.Message);
+                throw new Exception(ex.Message);
             }
         }
 
-        public static int ExecuteSql(string SQLString, string content)
+        public static int ExecuteSql(string sqlString, string content)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using var connection = new SqlConnection(ConnectionString);
+            var cmd = new SqlCommand(sqlString, connection);
+            var myParameter =
+                new SqlParameter("@content", SqlDbType.NText) {Value = content};
+            cmd.Parameters.Add(myParameter);
+            try
             {
-                SqlCommand cmd = new SqlCommand(SQLString, connection);
-                System.Data.SqlClient.SqlParameter myParameter =
-                    new System.Data.SqlClient.SqlParameter("@content", SqlDbType.NText);
-                myParameter.Value = content;
-                cmd.Parameters.Add(myParameter);
-                try
-                {
-                    connection.Open();
-                    int rows = cmd.ExecuteNonQuery();
-                    return rows;
-                }
-                catch (System.Data.SqlClient.SqlException E)
-                {
-                    throw new Exception(E.Message);
-                }
-                finally
-                {
-                    cmd.Dispose();
-                    connection.Close();
-                }
+                connection.Open();
+                int rows = cmd.ExecuteNonQuery();
+                return rows;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                cmd.Dispose();
+                connection.Close();
             }
         }
 
-        public static int ExecuteSqlInsertImg(string strSQL, byte[] fs)
+        public static int ExecuteSqlInsertImg(string sqlString, byte[] fs)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using var connection = new SqlConnection(ConnectionString);
+            var cmd = new SqlCommand(sqlString, connection);
+            var myParameter =
+                new SqlParameter("@fs", SqlDbType.Image) {Value = fs};
+            cmd.Parameters.Add(myParameter);
+            try
             {
-                SqlCommand cmd = new SqlCommand(strSQL, connection);
-                System.Data.SqlClient.SqlParameter myParameter =
-                    new System.Data.SqlClient.SqlParameter("@fs", SqlDbType.Image);
-                myParameter.Value = fs;
-                cmd.Parameters.Add(myParameter);
-                try
-                {
-                    connection.Open();
-                    int rows = cmd.ExecuteNonQuery();
-                    return rows;
-                }
-                catch (System.Data.SqlClient.SqlException E)
-                {
-                    throw new Exception(E.Message);
-                }
-                finally
-                {
-                    cmd.Dispose();
-                    connection.Close();
-                }
+                connection.Open();
+                var rows = cmd.ExecuteNonQuery();
+                return rows;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                cmd.Dispose();
+                connection.Close();
             }
         }
 
-        public static object GetSingle(string SQLString)
+        private static object GetSingle(string sqlString)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using var connection = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand(sqlString, connection);
+            try
             {
-                using (SqlCommand cmd = new SqlCommand(SQLString, connection))
+                connection.Open();
+                var obj = cmd.ExecuteScalar();
+                if (Equals(obj, null) || Equals(obj, DBNull.Value))
                 {
-                    try
-                    {
-                        connection.Open();
-                        object obj = cmd.ExecuteScalar();
-                        if ((Object.Equals(obj, null)) || (Object.Equals(obj, System.DBNull.Value)))
-                        {
-                            return null;
-                        }
-                        else
-                        {
-                            return obj;
-                        }
-                    }
-                    catch (System.Data.SqlClient.SqlException e)
-                    {
-                        connection.Close();
-                        throw new Exception(e.Message);
-                    }
+                    return null;
                 }
+                else
+                {
+                    return obj;
+                }
+            }
+            catch (SqlException ex)
+            {
+                connection.Close();
+                throw new Exception(ex.Message);
             }
         }
 
-        public static SqlDataReader ExecuteReader(string strSQL)
+        public static SqlDataReader ExecuteReader(string sqlString)
         {
             SqlConnection connection = new SqlConnection(ConnectionString);
-            SqlCommand cmd = new SqlCommand(strSQL, connection);
+            SqlCommand cmd = new SqlCommand(sqlString, connection);
             try
             {
                 connection.Open();
                 SqlDataReader myReader = cmd.ExecuteReader();
                 return myReader;
             }
-            catch (System.Data.SqlClient.SqlException e)
+            catch (SqlException ex)
             {
-                throw new Exception(e.Message);
+                throw new Exception(ex.Message);
             }
         }
 
-        public static DataSet Query(string SQLString)
+        public static DataSet Query(string sqlString)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using var connection = new SqlConnection(ConnectionString);
+            var ds = new DataSet();
+            try
             {
-                DataSet ds = new DataSet();
-                try
-                {
-                    connection.Open();
-                    SqlDataAdapter command = new SqlDataAdapter(SQLString, connection);
-                    command.Fill(ds, "ds");
-                }
-                catch (System.Data.SqlClient.SqlException ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-
-                return ds;
+                connection.Open();
+                var command = new SqlDataAdapter(sqlString, connection);
+                command.Fill(ds, "ds");
             }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return ds;
         }
 
         #endregion
 
         #region Execute SQl with Param
 
-        public static int ExecuteSql(string SQLString, params SqlParameter[] cmdParms)
+        public static int ExecuteSql(string sqlString, params SqlParameter[] cmdParams)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    try
-                    {
-                        PrepareCommand(cmd, connection, null, SQLString, cmdParms);
-                        int rows = cmd.ExecuteNonQuery();
-                        cmd.Parameters.Clear();
-                        return rows;
-                    }
-                    catch (System.Data.SqlClient.SqlException E)
-                    {
-                        throw new Exception(E.Message);
-                    }
-                }
-            }
-        }
-
-        public static void ExecuteSqlTran(Hashtable SQLStringList)
-        {
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
-            {
-                conn.Open();
-                using (SqlTransaction trans = conn.BeginTransaction())
-                {
-                    SqlCommand cmd = new SqlCommand();
-                    try
-                    {
-                        //循环
-                        foreach (DictionaryEntry myDE in SQLStringList)
-                        {
-                            string cmdText = myDE.Key.ToString();
-                            SqlParameter[] cmdParms = (SqlParameter[]) myDE.Value;
-                            PrepareCommand(cmd, conn, trans, cmdText, cmdParms);
-                            int val = cmd.ExecuteNonQuery();
-                            cmd.Parameters.Clear();
-
-                            trans.Commit();
-                        }
-                    }
-                    catch
-                    {
-                        trans.Rollback();
-                        throw;
-                    }
-                }
-            }
-        }
-
-        public static object GetSingle(string SQLString, params SqlParameter[] cmdParms)
-        {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    try
-                    {
-                        PrepareCommand(cmd, connection, null, SQLString, cmdParms);
-                        object obj = cmd.ExecuteScalar();
-                        cmd.Parameters.Clear();
-                        if ((Object.Equals(obj, null)) || (Object.Equals(obj, System.DBNull.Value)))
-                        {
-                            return null;
-                        }
-                        else
-                        {
-                            return obj;
-                        }
-                    }
-                    catch (System.Data.SqlClient.SqlException e)
-                    {
-                        throw new Exception(e.Message);
-                    }
-                }
-            }
-        }
-
-        public static SqlDataReader ExecuteReader(string SQLString, params SqlParameter[] cmdParms)
-        {
-            SqlConnection connection = new SqlConnection(ConnectionString);
-            SqlCommand cmd = new SqlCommand();
+            using var connection = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand();
             try
             {
-                PrepareCommand(cmd, connection, null, SQLString, cmdParms);
-                SqlDataReader myReader = cmd.ExecuteReader();
+                PrepareCommand(cmd, connection, null, sqlString, cmdParams);
+                int rows = cmd.ExecuteNonQuery();
+                cmd.Parameters.Clear();
+                return rows;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public static void ExecuteSqlTran(Hashtable sqlStringList)
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            conn.Open();
+            using var trans = conn.BeginTransaction();
+            var cmd = new SqlCommand();
+            try
+            {
+                foreach (DictionaryEntry de in sqlStringList)
+                {
+                    var cmdText = de.Key.ToString();
+                    var cmdParams = (SqlParameter[]) de.Value;
+                    PrepareCommand(cmd, conn, trans, cmdText, cmdParams);
+                    cmd.ExecuteNonQuery();
+                    cmd.Parameters.Clear();
+
+                    trans.Commit();
+                }
+            }
+            catch
+            {
+                trans.Rollback();
+                throw;
+            }
+        }
+
+        private static object GetSingle(string sqlString, params SqlParameter[] cmdParams)
+        {
+            using var connection = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand();
+            try
+            {
+                PrepareCommand(cmd, connection, null, sqlString, cmdParams);
+                object obj = cmd.ExecuteScalar();
+                cmd.Parameters.Clear();
+                if (Equals(obj, null) || Equals(obj, DBNull.Value))
+                {
+                    return null;
+                }
+
+                return obj;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public static SqlDataReader ExecuteReader(string sqlString, params SqlParameter[] cmdParams)
+        {
+            var connection = new SqlConnection(ConnectionString);
+            var cmd = new SqlCommand();
+            try
+            {
+                PrepareCommand(cmd, connection, null, sqlString, cmdParams);
+                var myReader = cmd.ExecuteReader();
                 cmd.Parameters.Clear();
                 return myReader;
             }
-            catch (System.Data.SqlClient.SqlException e)
+            catch (SqlException ex)
             {
-                throw new Exception(e.Message);
+                throw new Exception(ex.Message);
             }
         }
 
-        public static DataSet Query(string SQLString, params SqlParameter[] cmdParms)
+        public static DataSet Query(string sqlString, params SqlParameter[] cmdParams)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            using var connection = new SqlConnection(ConnectionString);
+            var cmd = new SqlCommand();
+            PrepareCommand(cmd, connection, null, sqlString, cmdParams);
+            using var da = new SqlDataAdapter(cmd);
+            var ds = new DataSet();
+            try
             {
-                SqlCommand cmd = new SqlCommand();
-                PrepareCommand(cmd, connection, null, SQLString, cmdParms);
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    DataSet ds = new DataSet();
-                    try
-                    {
-                        da.Fill(ds, "ds");
-                        cmd.Parameters.Clear();
-                    }
-                    catch (System.Data.SqlClient.SqlException ex)
-                    {
-                        throw new Exception(ex.Message);
-                    }
-
-                    return ds;
-                }
+                da.Fill(ds, "ds");
+                cmd.Parameters.Clear();
             }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+            return ds;
         }
 
 
         private static void PrepareCommand(SqlCommand cmd, SqlConnection conn, SqlTransaction trans, string cmdText,
-            SqlParameter[] cmdParms)
+            SqlParameter[] cmdParams)
         {
             if (conn.State != ConnectionState.Open)
                 conn.Open();
@@ -346,11 +309,9 @@ namespace Services
             if (trans != null)
                 cmd.Transaction = trans;
             cmd.CommandType = CommandType.Text; //cmdType;
-            if (cmdParms != null)
-            {
-                foreach (SqlParameter parm in cmdParms)
-                    cmd.Parameters.Add(parm);
-            }
+            if (cmdParams == null) return;
+            foreach (var param in cmdParams)
+                cmd.Parameters.Add(param);
         }
 
         #endregion
@@ -359,36 +320,34 @@ namespace Services
 
         public static SqlDataReader RunProcedure(string storedProcName, IDataParameter[] parameters)
         {
-            SqlConnection connection = new SqlConnection(ConnectionString);
-            SqlDataReader returnReader;
+            var connection = new SqlConnection(ConnectionString);
             connection.Open();
-            SqlCommand command = BuildQueryCommand(connection, storedProcName, parameters);
+            var command = BuildQueryCommand(connection, storedProcName, parameters);
             command.CommandType = CommandType.StoredProcedure;
-            returnReader = command.ExecuteReader();
+            var returnReader = command.ExecuteReader();
             return returnReader;
         }
 
         public static DataSet RunProcedure(string storedProcName, IDataParameter[] parameters, string tableName)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                DataSet dataSet = new DataSet();
-                connection.Open();
-                SqlDataAdapter sqlDA = new SqlDataAdapter();
-                sqlDA.SelectCommand = BuildQueryCommand(connection, storedProcName, parameters);
-                sqlDA.Fill(dataSet, tableName);
-                connection.Close();
-                return dataSet;
-            }
+            var sqlDa = new SqlDataAdapter();
+            using SqlConnection connection = new SqlConnection(ConnectionString);
+            var dataSet = new DataSet();
+            connection.Open();
+            sqlDa.SelectCommand = BuildQueryCommand(connection, storedProcName, parameters);
+            sqlDa.Fill(dataSet, tableName);
+            connection.Close();
+            return dataSet;
         }
 
         private static SqlCommand BuildQueryCommand(SqlConnection connection, string storedProcName,
             IDataParameter[] parameters)
         {
-            SqlCommand command = new SqlCommand(storedProcName, connection);
-            command.CommandType = CommandType.StoredProcedure;
-            foreach (SqlParameter parameter in parameters)
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            var command = new SqlCommand(storedProcName, connection) {CommandType = CommandType.StoredProcedure};
+            foreach (var dataParameter in parameters)
             {
+                var parameter = (SqlParameter) dataParameter;
                 command.Parameters.Add(parameter);
             }
 
@@ -397,16 +356,13 @@ namespace Services
 
         public static int RunProcedure(string storedProcName, IDataParameter[] parameters, out int rowsAffected)
         {
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
-            {
-                int result;
-                connection.Open();
-                SqlCommand command = BuildIntCommand(connection, storedProcName, parameters);
-                rowsAffected = command.ExecuteNonQuery();
-                result = (int) command.Parameters["ReturnValue"].Value;
-                //Connection.Close();
-                return result;
-            }
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var command = BuildIntCommand(connection, storedProcName, parameters);
+            rowsAffected = command.ExecuteNonQuery();
+            var result = (int) command.Parameters["ReturnValue"].Value;
+            //Connection.Close();
+            return result;
         }
 
         private static SqlCommand BuildIntCommand(SqlConnection connection, string storedProcName,
