@@ -20,27 +20,19 @@ namespace Services
         /// <returns></returns>
         public static string DataSetToXml(DataSet ds)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                using (TextWriter streamWriter = new StreamWriter(memoryStream))
-                {
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(DataSet));
-                    xmlSerializer.Serialize(streamWriter, ds);
-                    return Encoding.UTF8.GetString(memoryStream.ToArray());
-                }
-            }
+            using var memoryStream = new MemoryStream();
+            using TextWriter streamWriter = new StreamWriter(memoryStream);
+            var xmlSerializer = new XmlSerializer(typeof(DataSet));
+            xmlSerializer.Serialize(streamWriter, ds);
+            return Encoding.UTF8.GetString(memoryStream.ToArray());
         }
 
         public static string ToLiteral(string input)
         {
-            using (var writer = new StringWriter())
-            {
-                using (var provider = CodeDomProvider.CreateProvider("CSharp"))
-                {
-                    provider.GenerateCodeFromExpression(new CodePrimitiveExpression(input), writer, null);
-                    return writer.ToString();
-                }
-            }
+            using var writer = new StringWriter();
+            using var provider = CodeDomProvider.CreateProvider("CSharp");
+            provider.GenerateCodeFromExpression(new CodePrimitiveExpression(input), writer, null);
+            return writer.ToString();
         }
     }
 
@@ -163,37 +155,35 @@ namespace Services
         {
             try
             {
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
 
-                XDocument doc = XDocument.Load(xmlfilepath);
-                string Rowseparater = string.Empty;
-                FetchRowSeparater(rdelimit, out Rowseparater);
+                var doc = XDocument.Load(xmlfilepath);
+                FetchRowSeparater(rdelimit, out var rowSeparater);
 
-                string Columnseparater = string.Empty;
-                FetchColumnSeparater(cdelimit, out Columnseparater);
+                FetchColumnSeparater(cdelimit, out var columnseparater);
 
-                foreach (XElement data in doc.Descendants(datatag))
+                foreach (var data in doc.Descendants(datatag))
                 {
                     if (arrange == DataArrange.Element)
                     {
-                        foreach (XElement innnerval in data.Elements())
+                        foreach (var xElement in data.Elements())
                         {
-                            builder.Append(innnerval.Value);
-                            builder.Append(Columnseparater);
+                            builder.Append(xElement.Value);
+                            builder.Append(columnseparater);
                         }
                     }
                     else
                     {
-                        foreach (XAttribute innerval in data.Attributes())
+                        foreach (var xAttribute in data.Attributes())
                         {
-                            builder.Append(innerval.Value);
-                            builder.Append(Columnseparater);
+                            builder.Append(xAttribute.Value);
+                            builder.Append(columnseparater);
                         }
                     }
 
                     // Remove the last Columnseparater
                     builder.Remove(builder.Length - 1, 1);
-                    builder.Append(Rowseparater);
+                    builder.Append(rowSeparater);
                 }
 
                 File.AppendAllText(csvpath, builder.ToString());
@@ -210,6 +200,8 @@ namespace Services
         /// <param name="xmlString">XML with only one node</param>
         /// <param name="rdelimit">Row separater</param>
         /// <param name="cdelimit">Column separater</param>
+        /// <param name="dbLevel"></param>
+        /// <param name="timeStamp"></param>
         public static void Convert(string xmlString, RowDelimit rdelimit, ColumnDelimit cdelimit, string dbLevel,
             string timeStamp)
         {
@@ -217,19 +209,16 @@ namespace Services
             {
                 #region ReadXML
 
-                StringBuilder builder = new StringBuilder();
-                XmlDocument xDoc = new XmlDocument();
+                var builder = new StringBuilder();
+                var xDoc = new XmlDocument();
                 xDoc.LoadXml(xmlString);
-                string Rowseparater = string.Empty;
-                FetchRowSeparater(rdelimit, out Rowseparater);
-                string Columnseparater = string.Empty;
-                FetchColumnSeparater(cdelimit, out Columnseparater);
+                FetchRowSeparater(rdelimit, out var rowSeparater);
+                FetchColumnSeparater(cdelimit, out var columnSeparater);
                 // Set default Header separater to TabSpace.
-                string Headerseparater = string.Empty;
-                FetchColumnSeparater(ColumnDelimit.TabSpace, out Headerseparater);
-                XmlNode root = xDoc.FirstChild;
+                FetchColumnSeparater(ColumnDelimit.TabSpace, out var headerSeparater);
+                var root = xDoc.FirstChild;
 
-                string tableName = string.Empty;
+                string tableName;
                 if (xDoc.DocumentElement != null)
                 {
                     tableName = xDoc.DocumentElement.Name;
@@ -239,26 +228,27 @@ namespace Services
                     throw new Exception("Incorrect XML format");
                 }
 
-                string site = xDoc.FirstChild["site_ref"]?.InnerText;
+                if (xDoc.FirstChild == null) return;
+                var site = xDoc.FirstChild["site_ref"]?.InnerText;
 
                 #endregion
 
                 #region Create folder and CSV file
 
-                bool fileFlag = false;
-                string folderName = @"C:\Development";
-                string pathString = System.IO.Path.Combine(folderName, "SubFolder");
-                System.IO.Directory.CreateDirectory(pathString);
+                var fileFlag = false;
+                const string folderName = @"C:\Development";
+                var pathString = Path.Combine(folderName, "SubFolder");
+                Directory.CreateDirectory(pathString);
 
                 //string fileName = System.IO.Path.GetRandomFileName();
-                string fileName = tableName + dbLevel + site + timeStamp;
-                pathString = System.IO.Path.Combine(pathString, fileName);
+                var fileName = tableName + dbLevel + site + timeStamp;
+                pathString = Path.Combine(pathString, fileName);
 
                 // Check that the file doesn't already exist. If it doesn't exist, create.
-                if (!System.IO.File.Exists(pathString))
+                if (!File.Exists(pathString))
                 {
                     // Create file.
-                    using (System.IO.File.Create(pathString))
+                    using (File.Create(pathString))
                     {
                         // First reading Flag.
                         fileFlag = true;
@@ -270,29 +260,29 @@ namespace Services
                 #region Write
 
                 //Display the contents of the child nodes.
-                if (root.HasChildNodes)
+                if (root != null && root.HasChildNodes)
                 {
                     // Write node name at first reading.
                     if (fileFlag)
                     {
                         for (int i = 0; i < root.ChildNodes.Count; i++)
                         {
-                            builder.Append(root.ChildNodes[i].Name);
-                            builder.Append(Headerseparater);
+                            builder.Append(root.ChildNodes[i]?.Name);
+                            builder.Append(headerSeparater);
                         }
 
                         builder.Remove(builder.Length - 1, 1);
-                        builder.Append(Rowseparater);
+                        builder.Append(rowSeparater);
                     }
 
                     for (int i = 0; i < root.ChildNodes.Count; i++)
                     {
-                        builder.Append(root.ChildNodes[i].InnerText);
-                        builder.Append(Columnseparater);
+                        builder.Append(root.ChildNodes[i]?.InnerText);
+                        builder.Append(columnSeparater);
                     }
 
                     builder.Remove(builder.Length - 1, 1);
-                    builder.Append(Rowseparater);
+                    builder.Append(rowSeparater);
                 }
 
                 File.AppendAllText(pathString, builder.ToString());
@@ -309,6 +299,7 @@ namespace Services
         /// Convert XML to SVC By batch
         /// </summary>
         /// <param name="dataTable">Staging table</param>
+        /// <param name="arrange"></param>
         /// <param name="rdelimit">Row separater</param>
         /// <param name="cdelimit">Column separater</param>
         public static void Convert(DataTable dataTable, DataArrange arrange, RowDelimit rdelimit,
@@ -316,15 +307,12 @@ namespace Services
         {
             try
             {
-                string dbLevel = string.Empty;
-
                 // select SchemaLevel from [dbo].[ProductSchemaInfo]
-                dbLevel = "77";
+                var dbLevel = "77";
 
                 foreach (DataRow data in dataTable.Rows)
                 {
-                    string xmlString = string.Empty;
-                    xmlString = data["row_data"].ToString();
+                    var xmlString = data["row_data"].ToString();
                     long timeStamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
                     Convert(xmlString, rdelimit, cdelimit, dbLevel, timeStamp.ToString());
                 }
@@ -346,16 +334,14 @@ namespace Services
 
             #endregion
 
-            string originalXmlString = string.Empty;
+            string originalXmlString;
             DataSet ds = new DataSet();
             ds.Tables.Add(dataTable.Rows[0].Table.Clone());
             ds.Tables[0].ImportRow(dataTable.Rows[0]);
 
-            using (StringWriter sw = new StringWriter())
-            {
-                ds.Tables[0].WriteXml(sw);
-                originalXmlString = sw.ToString();
-            }
+            using var sw = new StringWriter();
+            ds.Tables[0].WriteXml(sw);
+            originalXmlString = sw.ToString();
 
             return originalXmlString;
         }
