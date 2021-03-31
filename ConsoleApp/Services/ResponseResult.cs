@@ -9,27 +9,27 @@ namespace Services
         /// <summary>
         /// success or not
         /// </summary>
-        public bool isSuccess;
+        public bool IsSuccess;
 
         /// <summary>
         /// timestamp
         /// </summary>
-        public long beginTimeStamp = DateTime.Now.ToFileTime();
+        public long BeginTimeStamp = DateTime.Now.ToFileTime();
 
         /// <summary>
         /// Time cost
         /// </summary>
-        public int timeCost;
+        public int TimeCost;
 
         /// <summary>
         /// error message
         /// </summary>
-        public string errMsg;
+        public string ErrMsg;
 
         /// <summary>
         /// data
         /// </summary>
-        public object data;
+        public object Data;
 
     }
 }
