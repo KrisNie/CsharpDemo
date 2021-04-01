@@ -14,6 +14,7 @@ namespace App
         {
             Console.WriteLine("Hello World!");
             UnbelievableClass.UnbelievableMethod();
+            Console.WriteLine(UnbelievableClass.EightLeggedEssayGenerator());
         }
     }
 }
