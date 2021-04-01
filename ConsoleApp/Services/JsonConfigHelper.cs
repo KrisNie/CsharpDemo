@@ -20,7 +20,7 @@ namespace Services
         {
             using var r = new StreamReader(path);
             var json = r.ReadToEnd();
-            this.Config = JsonConvert.DeserializeObject<Config>(json);
+            Config = JsonConvert.DeserializeObject<Config>(json);
         }
     }
 }
