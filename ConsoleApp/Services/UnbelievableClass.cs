@@ -1,26 +1,102 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Security;
+using System.Security.Cryptography;
+using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Services
 {
     public class UnbelievableClass
     {
-        private static Random _random = new Random();
+        private static readonly Random Random = new Random();
 
         public static void UnbelievableMethod()
         {
-            var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
-
-            // var dataSet = DataBaseHelper.Query("SELECT TOP 10 * FROM item_mst;");
-            // var dataTable = dataSet.Tables[0];
-            // var xmlList = dataTable.AsEnumerable().Select(x => x["row_data"]?.ToString()).ToList();
+            Console.WriteLine(GetVendorPublicIp());
         }
 
+
+        private static string GetVendorPublicIp()
+        {
+            var httpWebRequest = (HttpWebRequest) WebRequest.Create("https://ifconfig.me/ip");
+            httpWebRequest.Method = "GET";
+            httpWebRequest.Headers.Add("User-Agent: 1");
+            httpWebRequest.Headers.Add("User-Agent: 2");
+
+            httpWebRequest.Headers.Add("User-Agent: 3");
+            httpWebRequest.Headers.Add("User-Agent: 4");
+            httpWebRequest.Headers.Add("User-Agent: curl");
+
+            using (var response = httpWebRequest.GetResponse())
+            {
+                using (var reader = new StreamReader(response.GetResponseStream() ??
+                                                     throw new InvalidOperationException(
+                                                         "Failed to curl ifconfig.me/ip!")))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+
+        private static string GetMacAddress()
+        {
+            try
+            {
+                return NetworkInterface
+                    .GetAllNetworkInterfaces().Where(nic =>
+                        nic.OperationalStatus == OperationalStatus.Up &&
+                        nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                    .Select(nic => nic.GetPhysicalAddress().ToString())
+                    .FirstOrDefault();
+            }
+            catch (SecurityException e)
+            {
+                throw new Exception("xxx", e);
+            }
+        }
+
+        private static string GetClientPublicPort()
+        {
+            var tcpListener = new TcpListener(IPAddress.Loopback, 0);
+            tcpListener.Start();
+            var port = ((IPEndPoint) tcpListener.LocalEndpoint).Port;
+            tcpListener.Stop();
+            return port.ToString();
+        }
+
+
+        public static string GetPublicIp()
+        {
+            var request = (HttpWebRequest) WebRequest.Create("http://ifconfig.me");
+            request.UserAgent = "curl";
+            string publicIPAddress;
+            request.Method = "GET";
+
+            using (WebResponse response = request.GetResponse())
+            {
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    publicIPAddress = reader.ReadToEnd();
+                }
+            }
+
+            return publicIPAddress.Replace("\n", "");
+        }
+
+        public static string GetLocalIp()
+        {
+            return Dns.GetHostName();
+        }
 
         /// <summary>
         /// EightLeggedEssayGenerator
@@ -46,11 +122,36 @@ namespace Services
 
             // TODO: It can be refactoring
             var eightLeggedEssay =
-                $@"{fourWordsNounList[_random.Next(fourWordsNounListLength)]}是{verbList[_random.Next(verbListLength)]}{fourWordsNounList[_random.Next(fourWordsNounListLength)]}，{verbList[_random.Next(verbListLength)]}行业{threeWordsNounList[_random.Next(threeWordsNounListLength)]}。{fourWordsNounList[_random.Next(fourWordsNounListLength)]}是{verbList[_random.Next(verbListLength)]}{twoWordsNounList[_random.Next(twoWordsNounListLength)]}{fourWordsNounList[_random.Next(fourWordsNounListLength)]}，通过{threeWordsNounList[_random.Next(threeWordsNounListLength)]}和{threeWordsNounList[_random.Next(threeWordsNounListLength)]}达到{threeWordsNounList[_random.Next(threeWordsNounListLength)]}。{fourWordsNounList[_random.Next(fourWordsNounListLength)]}是在{fourWordsNounList[_random.Next(fourWordsNounListLength)]}采用{twoWordsNounList[_random.Next(twoWordsNounListLength)]}打法达成{fourWordsNounList[_random.Next(fourWordsNounListLength)]}。{fourWordsNounList[_random.Next(fourWordsNounListLength)]}{fourWordsNounList[_random.Next(fourWordsNounListLength)]}作为{twoWordsNounList[_random.Next(twoWordsNounListLength)]}为产品赋能，{fourWordsNounList[_random.Next(fourWordsNounListLength)]}作为{twoWordsNounList[_random.Next(twoWordsNounListLength)]}的评判标准。亮点是{twoWordsNounList[_random.Next(twoWordsNounListLength)]}，优势是{twoWordsNounList[_random.Next(twoWordsNounListLength)]}。{verbList[_random.Next(verbListLength)]}整个{fourWordsNounList[_random.Next(fourWordsNounListLength)]}，{verbList[_random.Next(verbListLength)]}{twoWordsNounList[_random.Next(twoWordsNounListLength)]}{verbList[_random.Next(verbListLength)]}{fourWordsNounList[_random.Next(fourWordsNounListLength)]}。{threeWordsNounList[_random.Next(threeWordsNounListLength)]}是{threeWordsNounList[_random.Next(threeWordsNounListLength)]}达到{threeWordsNounList[_random.Next(threeWordsNounListLength)]}标准。";
+                $@"{fourWordsNounList[Random.Next(fourWordsNounListLength)]}是{verbList[Random.Next(verbListLength)]}{
+                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}，{
+                        verbList[Random.Next(verbListLength)]
+                    }行业{threeWordsNounList[Random.Next(threeWordsNounListLength)]}。{
+                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}是{
+                        verbList[Random.Next(verbListLength)]}{twoWordsNounList[Random.Next(twoWordsNounListLength)]}{
+                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}，通过{
+                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}和{
+                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}达到{
+                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}。{
+                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}是在{
+                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}采用{
+                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}打法达成{
+                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}。{
+                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}{
+                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}作为{
+                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}为产品赋能，{
+                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}作为{
+                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}的评判标准。亮点是{
+                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}，优势是{
+                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}。{verbList[Random.Next(verbListLength)]
+                    }整个{fourWordsNounList[Random.Next(fourWordsNounListLength)]}，{
+                        verbList[Random.Next(verbListLength)]}{twoWordsNounList[Random.Next(twoWordsNounListLength)]}{
+                        verbList[Random.Next(verbListLength)]}{fourWordsNounList[Random.Next(fourWordsNounListLength)]
+                    }。{threeWordsNounList[Random.Next(threeWordsNounListLength)]}是{
+                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}达到{
+                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}标准。";
 
             return eightLeggedEssay;
         }
-
 
         /// <summary>
         /// ReadCsvAndConvert2Xml
@@ -124,6 +225,59 @@ namespace Services
 
             // Close the response.
             response.Close();
+        }
+
+
+        private static string Decrypt(string encryptedString)
+        {
+            try
+            {
+                // Get the bytes of the string
+                var bytesToBeDecrypted = Convert.FromBase64String(encryptedString);
+                var passwordBytes = Encoding.UTF8.GetBytes("SaltBytes");
+                passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
+
+                var bytesDecrypted = AESDecrypt(bytesToBeDecrypted, passwordBytes);
+                return Encoding.UTF8.GetString(bytesDecrypted);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Decrypt Encrypted Characters Failed!", e);
+            }
+        }
+
+        private static byte[] AESDecrypt(byte[] bytesToBeDecrypted, byte[] passwordBytes)
+        {
+            byte[] decryptedBytes = null;
+
+            // Set your salt here, change it to meet your flavor:
+            // The salt bytes must be at least 8 bytes.
+            var saltBytes = new byte[] {1, 2, 3, 4, 5, 6, 7, 8};
+
+            using (var ms = new MemoryStream())
+            {
+                using (var AES = new RijndaelManaged())
+                {
+                    AES.KeySize = 256;
+                    AES.BlockSize = 128;
+
+                    var key = new Rfc2898DeriveBytes(passwordBytes, saltBytes, 1000);
+                    AES.Key = key.GetBytes(AES.KeySize / 8);
+                    AES.IV = key.GetBytes(AES.BlockSize / 8);
+
+                    AES.Mode = CipherMode.CBC;
+
+                    using (var cs = new CryptoStream(ms, AES.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(bytesToBeDecrypted, 0, bytesToBeDecrypted.Length);
+                        cs.Close();
+                    }
+
+                    decryptedBytes = ms.ToArray();
+                }
+            }
+
+            return decryptedBytes;
         }
     }
 }
