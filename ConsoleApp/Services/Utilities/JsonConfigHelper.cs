@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.IO;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-namespace Services
+namespace Services.Utilities
 {
     public class Config
     {

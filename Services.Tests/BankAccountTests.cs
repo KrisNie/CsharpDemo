@@ -1,33 +1,38 @@
 using Moq;
 using NUnit.Framework;
-using Services;
+using Services.Finance;
 
 namespace ServicesTests
 {
     public class BankAccountTests
     {
-        private Mock<UnbelievableClass> _mockUnbelievableClass;
+        private Mock<ICalculator> _mockCalculator;
+
+        private IBankAccount _mockBankAccountObject;
+        private const double BeginningBalance = 11.99;
+
 
         [SetUp]
         public void Setup()
         {
-            _mockUnbelievableClass = new Mock<UnbelievableClass>();
+            _mockCalculator = new Mock<ICalculator>();
+
+            _mockBankAccountObject = new BankAccount(_mockCalculator.Object);
         }
 
         [Test]
         public void WhenSuccess_ThenSuccessMessage()
         {
             // Arrange
-            const double beginningBalance = 11.99;
             const double debitAmount = 4.55;
             const double expected = 7.44;
-            var account = new BankAccount("Mr. Bryan Walton", beginningBalance);
+            _mockBankAccountObject.Create("Mr. Bryan Walton", BeginningBalance);
 
             // Act
-            account.Debit(debitAmount); // 11.99 - 4.55 = 7.44
+            _mockBankAccountObject.Debit(debitAmount); // 11.99 - 4.55 = 7.44
 
             // Assert
-            Assert.AreEqual(expected, account.Balance, 0.001, "Account not debited correctly");
+            Assert.AreEqual(expected, _mockBankAccountObject.Balance, 0.001, "Account not debited correctly");
         }
     }
 }

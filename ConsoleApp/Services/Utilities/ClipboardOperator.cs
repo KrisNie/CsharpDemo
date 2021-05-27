@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Services
+namespace Services.Utilities
 {
     public static class ClipboardOperator
     {

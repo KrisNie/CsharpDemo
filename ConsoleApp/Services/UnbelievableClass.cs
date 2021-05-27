@@ -12,6 +12,10 @@ using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Services.Utilities;
+using Microsoft.Extensions.DependencyInjection;
+using Services.Finance;
+
 
 namespace Services
 {
@@ -21,7 +25,18 @@ namespace Services
 
         public static void UnbelievableMethod()
         {
-            Console.WriteLine(GetVendorPublicIp());
+            TestForDependencyInjection();
+        }
+
+        private static void TestForDependencyInjection()
+        {
+            var ba = new CompositionRoot().GetService<IBankAccount>();
+            if (ba == null) return;
+            ba.Create("Mr. Bryan Walton", 11.99);
+
+            ba.Credit(5.77);
+            ba.Debit(11.22);
+            Console.WriteLine("Current balance is ${0}", ba.Balance);
         }
 
 
@@ -29,22 +44,13 @@ namespace Services
         {
             var httpWebRequest = (HttpWebRequest) WebRequest.Create("https://ifconfig.me/ip");
             httpWebRequest.Method = "GET";
-            httpWebRequest.Headers.Add("User-Agent: 1");
-            httpWebRequest.Headers.Add("User-Agent: 2");
-
-            httpWebRequest.Headers.Add("User-Agent: 3");
-            httpWebRequest.Headers.Add("User-Agent: 4");
             httpWebRequest.Headers.Add("User-Agent: curl");
 
-            using (var response = httpWebRequest.GetResponse())
-            {
-                using (var reader = new StreamReader(response.GetResponseStream() ??
-                                                     throw new InvalidOperationException(
-                                                         "Failed to curl ifconfig.me/ip!")))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
+            using var response = httpWebRequest.GetResponse();
+            using var reader = new StreamReader(response.GetResponseStream() ??
+                                                throw new InvalidOperationException(
+                                                    "Failed to curl ifconfig.me/ip!"));
+            return reader.ReadToEnd();
         }
 
 
@@ -123,32 +129,53 @@ namespace Services
             // TODO: It can be refactoring
             var eightLeggedEssay =
                 $@"{fourWordsNounList[Random.Next(fourWordsNounListLength)]}是{verbList[Random.Next(verbListLength)]}{
-                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}，{
+                    fourWordsNounList[Random.Next(fourWordsNounListLength)]}，{
                         verbList[Random.Next(verbListLength)]
                     }行业{threeWordsNounList[Random.Next(threeWordsNounListLength)]}。{
                         fourWordsNounList[Random.Next(fourWordsNounListLength)]}是{
-                        verbList[Random.Next(verbListLength)]}{twoWordsNounList[Random.Next(twoWordsNounListLength)]}{
-                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}，通过{
-                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}和{
-                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}达到{
-                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}。{
-                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}是在{
-                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}采用{
-                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}打法达成{
-                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}。{
-                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}{
-                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}作为{
-                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}为产品赋能，{
-                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}作为{
-                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}的评判标准。亮点是{
-                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}，优势是{
-                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}。{verbList[Random.Next(verbListLength)]
-                    }整个{fourWordsNounList[Random.Next(fourWordsNounListLength)]}，{
-                        verbList[Random.Next(verbListLength)]}{twoWordsNounList[Random.Next(twoWordsNounListLength)]}{
-                        verbList[Random.Next(verbListLength)]}{fourWordsNounList[Random.Next(fourWordsNounListLength)]
-                    }。{threeWordsNounList[Random.Next(threeWordsNounListLength)]}是{
-                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}达到{
-                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}标准。";
+                            verbList[Random.Next(verbListLength)]}{twoWordsNounList[Random.Next(twoWordsNounListLength)]
+                            }{
+                                fourWordsNounList[Random.Next(fourWordsNounListLength)]}，通过{
+                                    threeWordsNounList[Random.Next(threeWordsNounListLength)]}和{
+                                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}达到{
+                                            threeWordsNounList[Random.Next(threeWordsNounListLength)]}。{
+                                                fourWordsNounList[Random.Next(fourWordsNounListLength)]}是在{
+                                                    fourWordsNounList[Random.Next(fourWordsNounListLength)]}采用{
+                                                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}打法达成{
+                                                            fourWordsNounList[Random.Next(fourWordsNounListLength)]}。{
+                                                                fourWordsNounList[Random.Next(fourWordsNounListLength)]
+                                                            }{
+                                                                fourWordsNounList[Random.Next(fourWordsNounListLength)]
+                                                            }作为{
+                                                                twoWordsNounList[Random.Next(twoWordsNounListLength)]
+                                                            }为产品赋能，{
+                                                                fourWordsNounList[Random.Next(fourWordsNounListLength)]
+                                                            }作为{
+                                                                twoWordsNounList[Random.Next(twoWordsNounListLength)]
+                                                            }的评判标准。亮点是{
+                                                                twoWordsNounList[Random.Next(twoWordsNounListLength)]
+                                                            }，优势是{
+                                                                twoWordsNounList[Random.Next(twoWordsNounListLength)]}。{
+                                                                    verbList[Random.Next(verbListLength)]
+                                                                }整个{fourWordsNounList[
+                                                                    Random.Next(fourWordsNounListLength)]}，{
+                                                                    verbList[Random.Next(verbListLength)]}{
+                                                                        twoWordsNounList[
+                                                                            Random.Next(twoWordsNounListLength)]}{
+                                                                            verbList[Random.Next(verbListLength)]}{
+                                                                                fourWordsNounList[
+                                                                                    Random.Next(
+                                                                                        fourWordsNounListLength)]
+                                                                            }。{threeWordsNounList[
+                                                                                Random.Next(threeWordsNounListLength)]
+                                                                            }是{
+                                                                                threeWordsNounList[
+                                                                                    Random.Next(
+                                                                                        threeWordsNounListLength)]}达到{
+                                                                                        threeWordsNounList[
+                                                                                            Random.Next(
+                                                                                                threeWordsNounListLength)]
+                                                                                    }标准。";
 
             return eightLeggedEssay;
         }
