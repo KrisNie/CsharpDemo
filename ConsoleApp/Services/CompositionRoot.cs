@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Services.Finance;
 
 namespace Services
@@ -13,6 +14,8 @@ namespace Services
             var sc = new ServiceCollection();
             sc.AddScoped<ICalculator, Calculator>();
             sc.AddScoped<IBankAccount, BankAccount>();
+            sc.AddScoped(typeof(IBankAccount), typeof(BankAccount));
+            sc.Add(new ServiceDescriptor(typeof(IBankAccount), typeof(BankAccount), ServiceLifetime.Scoped));
             return sc;
         }
 

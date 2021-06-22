@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -11,11 +12,9 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Services.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Finance;
-
 
 namespace Services
 {
@@ -26,6 +25,9 @@ namespace Services
         public static void UnbelievableMethod()
         {
             TestForDependencyInjection();
+            var monitorCount = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Service = 'monitor'"
+            ).Get().Count;
+            Console.WriteLine(monitorCount);
         }
 
         private static void TestForDependencyInjection()
@@ -39,7 +41,6 @@ namespace Services
             Console.WriteLine("Current balance is ${0}", ba.Balance);
         }
 
-
         private static string GetVendorPublicIp()
         {
             var httpWebRequest = (HttpWebRequest) WebRequest.Create("https://ifconfig.me/ip");
@@ -52,7 +53,6 @@ namespace Services
                                                     "Failed to curl ifconfig.me/ip!"));
             return reader.ReadToEnd();
         }
-
 
         private static string GetMacAddress()
         {
@@ -80,23 +80,17 @@ namespace Services
             return port.ToString();
         }
 
-
         public static string GetPublicIp()
         {
             var request = (HttpWebRequest) WebRequest.Create("http://ifconfig.me");
             request.UserAgent = "curl";
-            string publicIPAddress;
             request.Method = "GET";
 
-            using (WebResponse response = request.GetResponse())
-            {
-                using (var reader = new StreamReader(response.GetResponseStream()))
-                {
-                    publicIPAddress = reader.ReadToEnd();
-                }
-            }
+            using var response = request.GetResponse();
+            using var reader = new StreamReader(response.GetResponseStream() ?? throw new InvalidOperationException());
+            var publicIpAddress = reader.ReadToEnd();
 
-            return publicIPAddress.Replace("\n", "");
+            return publicIpAddress.Replace("\n", "");
         }
 
         public static string GetLocalIp()
@@ -129,13 +123,12 @@ namespace Services
             // TODO: It can be refactoring
             var eightLeggedEssay =
                 $@"{fourWordsNounList[Random.Next(fourWordsNounListLength)]}是{verbList[Random.Next(verbListLength)]}{
-                    fourWordsNounList[Random.Next(fourWordsNounListLength)]}，{
-                        verbList[Random.Next(verbListLength)]
-                    }行业{threeWordsNounList[Random.Next(threeWordsNounListLength)]}。{
-                        fourWordsNounList[Random.Next(fourWordsNounListLength)]}是{
-                            verbList[Random.Next(verbListLength)]}{twoWordsNounList[Random.Next(twoWordsNounListLength)]
-                            }{
-                                fourWordsNounList[Random.Next(fourWordsNounListLength)]}，通过{
+                    fourWordsNounList[Random.Next(fourWordsNounListLength)]}，{verbList[Random.Next(verbListLength)]}行业{
+                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}。{
+                            fourWordsNounList[Random.Next(fourWordsNounListLength)]}是{
+                                verbList[Random.Next(verbListLength)]}{
+                                    twoWordsNounList[Random.Next(twoWordsNounListLength)]
+                                }{fourWordsNounList[Random.Next(fourWordsNounListLength)]}，通过{
                                     threeWordsNounList[Random.Next(threeWordsNounListLength)]}和{
                                         threeWordsNounList[Random.Next(threeWordsNounListLength)]}达到{
                                             threeWordsNounList[Random.Next(threeWordsNounListLength)]}。{
@@ -221,40 +214,6 @@ namespace Services
             return ds;
         }
 
-        /// <summary>
-        /// WebRequestGet
-        /// </summary>
-        /// <param name="url"></param>
-        private void WebRequestGet(string url)
-        {
-            // Create a request for the URL.
-            var request = WebRequest.Create(
-                "https://docs.microsoft.com");
-            // If required by the server, set the credentials.
-            request.Credentials = CredentialCache.DefaultCredentials;
-
-            // Get the response.
-            var response = request.GetResponse();
-            // Display the status.
-            Console.WriteLine(((HttpWebResponse) response).StatusDescription);
-
-            // Get the stream containing content returned by the server.
-            // The using block ensures the stream is automatically closed.
-            using (var dataStream = response.GetResponseStream())
-            {
-                // Open the stream using a StreamReader for easy access.
-                var reader = new StreamReader(dataStream);
-                // Read the content.
-                string responseFromServer = reader.ReadToEnd();
-                // Display the content.
-                Console.WriteLine(responseFromServer);
-            }
-
-            // Close the response.
-            response.Close();
-        }
-
-
         private static string Decrypt(string encryptedString)
         {
             try
@@ -275,34 +234,26 @@ namespace Services
 
         private static byte[] AESDecrypt(byte[] bytesToBeDecrypted, byte[] passwordBytes)
         {
-            byte[] decryptedBytes = null;
-
             // Set your salt here, change it to meet your flavor:
             // The salt bytes must be at least 8 bytes.
             var saltBytes = new byte[] {1, 2, 3, 4, 5, 6, 7, 8};
 
-            using (var ms = new MemoryStream())
+            using var ms = new MemoryStream();
+            using var aes = new RijndaelManaged {KeySize = 256, BlockSize = 128};
+
+            var key = new Rfc2898DeriveBytes(passwordBytes, saltBytes, 1000);
+            aes.Key = key.GetBytes(aes.KeySize / 8);
+            aes.IV = key.GetBytes(aes.BlockSize / 8);
+
+            aes.Mode = CipherMode.CBC;
+
+            using (var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
             {
-                using (var AES = new RijndaelManaged())
-                {
-                    AES.KeySize = 256;
-                    AES.BlockSize = 128;
-
-                    var key = new Rfc2898DeriveBytes(passwordBytes, saltBytes, 1000);
-                    AES.Key = key.GetBytes(AES.KeySize / 8);
-                    AES.IV = key.GetBytes(AES.BlockSize / 8);
-
-                    AES.Mode = CipherMode.CBC;
-
-                    using (var cs = new CryptoStream(ms, AES.CreateDecryptor(), CryptoStreamMode.Write))
-                    {
-                        cs.Write(bytesToBeDecrypted, 0, bytesToBeDecrypted.Length);
-                        cs.Close();
-                    }
-
-                    decryptedBytes = ms.ToArray();
-                }
+                cs.Write(bytesToBeDecrypted, 0, bytesToBeDecrypted.Length);
+                cs.Close();
             }
+
+            var decryptedBytes = ms.ToArray();
 
             return decryptedBytes;
         }

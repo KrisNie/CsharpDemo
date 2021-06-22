@@ -201,7 +201,7 @@ namespace Services.Utilities
         /// <param name="cdelimit">Column separater</param>
         /// <param name="dbLevel"></param>
         /// <param name="timeStamp"></param>
-        public static void Convert(string xmlString, RowDelimit rdelimit, ColumnDelimit cdelimit, string dbLevel,
+        private static void Convert(string xmlString, RowDelimit rdelimit, ColumnDelimit cdelimit, string dbLevel,
             string timeStamp)
         {
             try
@@ -333,14 +333,13 @@ namespace Services.Utilities
 
             #endregion
 
-            string originalXmlString;
-            DataSet ds = new DataSet();
+            var ds = new DataSet();
             ds.Tables.Add(dataTable.Rows[0].Table.Clone());
             ds.Tables[0].ImportRow(dataTable.Rows[0]);
 
             using var sw = new StringWriter();
             ds.Tables[0].WriteXml(sw);
-            originalXmlString = sw.ToString();
+            var originalXmlString = sw.ToString();
 
             return originalXmlString;
         }
