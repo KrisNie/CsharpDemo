@@ -1,15 +1,17 @@
 ﻿using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-
-namespace Services
+namespace Services.Utilities
 {
     public class Converter
     {
@@ -33,6 +35,70 @@ namespace Services
             using var provider = CodeDomProvider.CreateProvider("CSharp");
             provider.GenerateCodeFromExpression(new CodePrimitiveExpression(input), writer, null);
             return writer.ToString();
+        }
+
+        public static List<string> ConvertDataTableToXMl(DataTable dataTable)
+        {
+            var xmlList = new List<string>();
+            var ds = new DataSet();
+            ds.Tables.Add(dataTable.Rows[0].Table.Clone());
+
+            var builder = new StringBuilder();
+            var settings = new XmlWriterSettings()
+            {
+                Indent = false,
+                NewLineChars = "",
+                ConformanceLevel = ConformanceLevel.Fragment,
+                OmitXmlDeclaration = false
+            };
+
+            using var xmlWriter = XmlWriter.Create(builder, settings);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                ds.Tables[0].ImportRow(row);
+                ds.Tables[0].WriteXml(xmlWriter);
+
+                xmlList.Add(builder.ToString());
+                // Clear StringBuilder/DataSet/XmlWriter, enter into a next cycle
+                builder.Clear();
+                ds.Clear();
+            }
+
+            return xmlList;
+        }
+
+
+        public static Dictionary<string,string> SettleFileName(string fileName)
+        {
+            var fileNameDictionary = new Dictionary<string, string>();
+            var fileNameAnalysis = Regex.Split(fileName, @"(\.)|(-)")
+                .Where(m => !string.IsNullOrEmpty(m) && !m.Contains("-") && !m.Contains("."))
+                .ToList();
+            if (fileNameAnalysis.Count == 5)
+            {
+                fileNameDictionary.Add("TableName",fileNameAnalysis[0]);
+                fileNameDictionary.Add("Site",fileNameAnalysis[1]);
+                fileNameDictionary.Add("DBLevel",fileNameAnalysis[2]);
+                fileNameDictionary.Add("TaskNum",fileNameAnalysis[3]);
+                fileNameDictionary.Add("FileType",fileNameAnalysis[4]);
+                
+                Console.WriteLine($"TableName: {fileNameAnalysis[0]}");
+                Console.WriteLine($"Site: {fileNameAnalysis[1]}");
+                Console.WriteLine($"DBLevel: {fileNameAnalysis[2]}");
+                Console.WriteLine($"TaskNum: {fileNameAnalysis[3]}");
+                Console.WriteLine($"FileType: {fileNameAnalysis[4]}");
+            }
+            
+            return fileNameDictionary;
+        }
+
+        public static Dictionary<string, object> ConvertXMlToDictionary(string xmlString)
+        {
+            var xmlElement = XElement.Parse(xmlString);
+            var rootElement = xmlElement.Descendants().First();
+
+            return rootElement.Elements()
+                .ToDictionary<XElement, string, object>(el => el.Name.LocalName, el => el.Value);
         }
     }
 
@@ -202,7 +268,7 @@ namespace Services
         /// <param name="cdelimit">Column separater</param>
         /// <param name="dbLevel"></param>
         /// <param name="timeStamp"></param>
-        public static void Convert(string xmlString, RowDelimit rdelimit, ColumnDelimit cdelimit, string dbLevel,
+        private static void Convert(string xmlString, RowDelimit rdelimit, ColumnDelimit cdelimit, string dbLevel,
             string timeStamp)
         {
             try
@@ -321,29 +387,6 @@ namespace Services
             {
                 throw new Exception("Convert fail", exception);
             }
-        }
-    }
-
-    internal class DatatableToXml
-    {
-        public static string Convert(DataTable dataTable)
-        {
-            // Load Table Data
-
-            #region Load DataTable
-
-            #endregion
-
-            string originalXmlString;
-            DataSet ds = new DataSet();
-            ds.Tables.Add(dataTable.Rows[0].Table.Clone());
-            ds.Tables[0].ImportRow(dataTable.Rows[0]);
-
-            using var sw = new StringWriter();
-            ds.Tables[0].WriteXml(sw);
-            originalXmlString = sw.ToString();
-
-            return originalXmlString;
         }
     }
 }

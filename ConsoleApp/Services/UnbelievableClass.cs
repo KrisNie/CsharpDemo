@@ -1,26 +1,67 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Security;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Services.Finance;
+using Services.Utilities;
 
 namespace Services
 {
     public class UnbelievableClass
     {
-        private static Random _random = new Random();
+        private static readonly Random Random = new Random();
 
         public static void UnbelievableMethod()
         {
-            var timeStamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            var aa = DateTime.TryParseExact("",
+                new[] {"yyyy-MM-ddTHH:mm:ss.ffK"},
+                new CultureInfo("en-US"),
+                DateTimeStyles.None,
+                out var dateTime)
+                ? dateTime
+                : (object) "";
 
-            // var dataSet = DataBaseHelper.Query("SELECT TOP 10 * FROM item_mst;");
-            // var dataTable = dataSet.Tables[0];
-            // var xmlList = dataTable.AsEnumerable().Select(x => x["row_data"]?.ToString()).ToList();
+            var fileNameList = new List<string> {"u_m-DALS-86-1.csv", "u_m-DALS-86-2.csv", "xxx.txt"};
+
+            var a = fileNameList.AsEnumerable().Select(Converter.SettleFileName).Where(fileInfo => fileInfo.Count > 0)
+                .ToList();
+
+            // var xmlList = Converter.ConvertDataTableToXMl(new UnbelievableClass().GetDataSet().Tables[0]);
+            // Console.WriteLine(xmlList.First());
+            //
+            //
+            // var dictionary = Converter.ConvertXMlToDictionary(xmlList.First());
+            //
+            // foreach (var (key, value) in dictionary)
+            // {
+            //     Console.WriteLine($"Key = {key}, Value = {value}");
+            // }
         }
 
+        private static void TestForDependencyInjection()
+        {
+            var ba = new CompositionRoot().GetService<IBankAccount>();
+            if (ba == null) return;
+            ba.Create("Mr. Bryan Walton", 11.99);
+
+            ba.Credit(5.77);
+            ba.Debit(11.22);
+            Console.WriteLine("Current balance is ${0}", ba.Balance);
+        }
 
         /// <summary>
         /// EightLeggedEssayGenerator
@@ -46,11 +87,56 @@ namespace Services
 
             // TODO: It can be refactoring
             var eightLeggedEssay =
-                $@"{fourWordsNounList[_random.Next(fourWordsNounListLength)]}是{verbList[_random.Next(verbListLength)]}{fourWordsNounList[_random.Next(fourWordsNounListLength)]}，{verbList[_random.Next(verbListLength)]}行业{threeWordsNounList[_random.Next(threeWordsNounListLength)]}。{fourWordsNounList[_random.Next(fourWordsNounListLength)]}是{verbList[_random.Next(verbListLength)]}{twoWordsNounList[_random.Next(twoWordsNounListLength)]}{fourWordsNounList[_random.Next(fourWordsNounListLength)]}，通过{threeWordsNounList[_random.Next(threeWordsNounListLength)]}和{threeWordsNounList[_random.Next(threeWordsNounListLength)]}达到{threeWordsNounList[_random.Next(threeWordsNounListLength)]}。{fourWordsNounList[_random.Next(fourWordsNounListLength)]}是在{fourWordsNounList[_random.Next(fourWordsNounListLength)]}采用{twoWordsNounList[_random.Next(twoWordsNounListLength)]}打法达成{fourWordsNounList[_random.Next(fourWordsNounListLength)]}。{fourWordsNounList[_random.Next(fourWordsNounListLength)]}{fourWordsNounList[_random.Next(fourWordsNounListLength)]}作为{twoWordsNounList[_random.Next(twoWordsNounListLength)]}为产品赋能，{fourWordsNounList[_random.Next(fourWordsNounListLength)]}作为{twoWordsNounList[_random.Next(twoWordsNounListLength)]}的评判标准。亮点是{twoWordsNounList[_random.Next(twoWordsNounListLength)]}，优势是{twoWordsNounList[_random.Next(twoWordsNounListLength)]}。{verbList[_random.Next(verbListLength)]}整个{fourWordsNounList[_random.Next(fourWordsNounListLength)]}，{verbList[_random.Next(verbListLength)]}{twoWordsNounList[_random.Next(twoWordsNounListLength)]}{verbList[_random.Next(verbListLength)]}{fourWordsNounList[_random.Next(fourWordsNounListLength)]}。{threeWordsNounList[_random.Next(threeWordsNounListLength)]}是{threeWordsNounList[_random.Next(threeWordsNounListLength)]}达到{threeWordsNounList[_random.Next(threeWordsNounListLength)]}标准。";
+                $@"{fourWordsNounList[Random.Next(fourWordsNounListLength)]}是{verbList[Random.Next(verbListLength)]}{
+                    fourWordsNounList[Random.Next(fourWordsNounListLength)]}，{verbList[Random.Next(verbListLength)]}行业{
+                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}。{
+                            fourWordsNounList[Random.Next(fourWordsNounListLength)]}是{
+                                verbList[Random.Next(verbListLength)]}{
+                                    twoWordsNounList[Random.Next(twoWordsNounListLength)]
+                                }{fourWordsNounList[Random.Next(fourWordsNounListLength)]}，通过{
+                                    threeWordsNounList[Random.Next(threeWordsNounListLength)]}和{
+                                        threeWordsNounList[Random.Next(threeWordsNounListLength)]}达到{
+                                            threeWordsNounList[Random.Next(threeWordsNounListLength)]}。{
+                                                fourWordsNounList[Random.Next(fourWordsNounListLength)]}是在{
+                                                    fourWordsNounList[Random.Next(fourWordsNounListLength)]}采用{
+                                                        twoWordsNounList[Random.Next(twoWordsNounListLength)]}打法达成{
+                                                            fourWordsNounList[Random.Next(fourWordsNounListLength)]}。{
+                                                                fourWordsNounList[Random.Next(fourWordsNounListLength)]
+                                                            }{
+                                                                fourWordsNounList[Random.Next(fourWordsNounListLength)]
+                                                            }作为{
+                                                                twoWordsNounList[Random.Next(twoWordsNounListLength)]
+                                                            }为产品赋能，{
+                                                                fourWordsNounList[Random.Next(fourWordsNounListLength)]
+                                                            }作为{
+                                                                twoWordsNounList[Random.Next(twoWordsNounListLength)]
+                                                            }的评判标准。亮点是{
+                                                                twoWordsNounList[Random.Next(twoWordsNounListLength)]
+                                                            }，优势是{
+                                                                twoWordsNounList[Random.Next(twoWordsNounListLength)]}。{
+                                                                    verbList[Random.Next(verbListLength)]
+                                                                }整个{fourWordsNounList[
+                                                                    Random.Next(fourWordsNounListLength)]}，{
+                                                                    verbList[Random.Next(verbListLength)]}{
+                                                                        twoWordsNounList[
+                                                                            Random.Next(twoWordsNounListLength)]}{
+                                                                            verbList[Random.Next(verbListLength)]}{
+                                                                                fourWordsNounList[
+                                                                                    Random.Next(
+                                                                                        fourWordsNounListLength)]
+                                                                            }。{threeWordsNounList[
+                                                                                Random.Next(threeWordsNounListLength)]
+                                                                            }是{
+                                                                                threeWordsNounList[
+                                                                                    Random.Next(
+                                                                                        threeWordsNounListLength)]}达到{
+                                                                                        threeWordsNounList[
+                                                                                            Random.Next(
+                                                                                                threeWordsNounListLength)]
+                                                                                    }标准。";
 
             return eightLeggedEssay;
         }
-
 
         /// <summary>
         /// ReadCsvAndConvert2Xml
@@ -91,39 +177,6 @@ namespace Services
             }
 
             return ds;
-        }
-
-        /// <summary>
-        /// WebRequestGet
-        /// </summary>
-        /// <param name="url"></param>
-        private void WebRequestGet(string url)
-        {
-            // Create a request for the URL.
-            var request = WebRequest.Create(
-                "https://docs.microsoft.com");
-            // If required by the server, set the credentials.
-            request.Credentials = CredentialCache.DefaultCredentials;
-
-            // Get the response.
-            var response = request.GetResponse();
-            // Display the status.
-            Console.WriteLine(((HttpWebResponse) response).StatusDescription);
-
-            // Get the stream containing content returned by the server.
-            // The using block ensures the stream is automatically closed.
-            using (var dataStream = response.GetResponseStream())
-            {
-                // Open the stream using a StreamReader for easy access.
-                var reader = new StreamReader(dataStream);
-                // Read the content.
-                string responseFromServer = reader.ReadToEnd();
-                // Display the content.
-                Console.WriteLine(responseFromServer);
-            }
-
-            // Close the response.
-            response.Close();
         }
     }
 }

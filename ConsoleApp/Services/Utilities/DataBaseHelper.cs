@@ -3,7 +3,7 @@ using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Services
+namespace Services.Utilities
 {
     public static class DataBaseHelper
     {
