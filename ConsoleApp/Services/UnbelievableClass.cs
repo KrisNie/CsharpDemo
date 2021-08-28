@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -11,10 +12,12 @@ using System.Net.Sockets;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
-using Newtonsoft.Json;
-using Services.Utilities;
+using System.Text.RegularExpressions;
+using System.Xml;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Services.Finance;
+using Services.Utilities;
 
 namespace Services
 {
@@ -24,10 +27,29 @@ namespace Services
 
         public static void UnbelievableMethod()
         {
-            TestForDependencyInjection();
-            var monitorCount = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Service = 'monitor'"
-            ).Get().Count;
-            Console.WriteLine(monitorCount);
+            var aa = DateTime.TryParseExact("",
+                new[] {"yyyy-MM-ddTHH:mm:ss.ffK"},
+                new CultureInfo("en-US"),
+                DateTimeStyles.None,
+                out var dateTime)
+                ? dateTime
+                : (object) "";
+
+            var fileNameList = new List<string> {"u_m-DALS-86-1.csv", "u_m-DALS-86-2.csv", "xxx.txt"};
+
+            var a = fileNameList.AsEnumerable().Select(Converter.SettleFileName).Where(fileInfo => fileInfo.Count > 0)
+                .ToList();
+
+            // var xmlList = Converter.ConvertDataTableToXMl(new UnbelievableClass().GetDataSet().Tables[0]);
+            // Console.WriteLine(xmlList.First());
+            //
+            //
+            // var dictionary = Converter.ConvertXMlToDictionary(xmlList.First());
+            //
+            // foreach (var (key, value) in dictionary)
+            // {
+            //     Console.WriteLine($"Key = {key}, Value = {value}");
+            // }
         }
 
         private static void TestForDependencyInjection()
@@ -39,63 +61,6 @@ namespace Services
             ba.Credit(5.77);
             ba.Debit(11.22);
             Console.WriteLine("Current balance is ${0}", ba.Balance);
-        }
-
-        private static string GetVendorPublicIp()
-        {
-            var httpWebRequest = (HttpWebRequest) WebRequest.Create("https://ifconfig.me/ip");
-            httpWebRequest.Method = "GET";
-            httpWebRequest.Headers.Add("User-Agent: curl");
-
-            using var response = httpWebRequest.GetResponse();
-            using var reader = new StreamReader(response.GetResponseStream() ??
-                                                throw new InvalidOperationException(
-                                                    "Failed to curl ifconfig.me/ip!"));
-            return reader.ReadToEnd();
-        }
-
-        private static string GetMacAddress()
-        {
-            try
-            {
-                return NetworkInterface
-                    .GetAllNetworkInterfaces().Where(nic =>
-                        nic.OperationalStatus == OperationalStatus.Up &&
-                        nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                    .Select(nic => nic.GetPhysicalAddress().ToString())
-                    .FirstOrDefault();
-            }
-            catch (SecurityException e)
-            {
-                throw new Exception("xxx", e);
-            }
-        }
-
-        private static string GetClientPublicPort()
-        {
-            var tcpListener = new TcpListener(IPAddress.Loopback, 0);
-            tcpListener.Start();
-            var port = ((IPEndPoint) tcpListener.LocalEndpoint).Port;
-            tcpListener.Stop();
-            return port.ToString();
-        }
-
-        public static string GetPublicIp()
-        {
-            var request = (HttpWebRequest) WebRequest.Create("http://ifconfig.me");
-            request.UserAgent = "curl";
-            request.Method = "GET";
-
-            using var response = request.GetResponse();
-            using var reader = new StreamReader(response.GetResponseStream() ?? throw new InvalidOperationException());
-            var publicIpAddress = reader.ReadToEnd();
-
-            return publicIpAddress.Replace("\n", "");
-        }
-
-        public static string GetLocalIp()
-        {
-            return Dns.GetHostName();
         }
 
         /// <summary>
@@ -212,50 +177,6 @@ namespace Services
             }
 
             return ds;
-        }
-
-        private static string Decrypt(string encryptedString)
-        {
-            try
-            {
-                // Get the bytes of the string
-                var bytesToBeDecrypted = Convert.FromBase64String(encryptedString);
-                var passwordBytes = Encoding.UTF8.GetBytes("SaltBytes");
-                passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
-
-                var bytesDecrypted = AESDecrypt(bytesToBeDecrypted, passwordBytes);
-                return Encoding.UTF8.GetString(bytesDecrypted);
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Decrypt Encrypted Characters Failed!", e);
-            }
-        }
-
-        private static byte[] AESDecrypt(byte[] bytesToBeDecrypted, byte[] passwordBytes)
-        {
-            // Set your salt here, change it to meet your flavor:
-            // The salt bytes must be at least 8 bytes.
-            var saltBytes = new byte[] {1, 2, 3, 4, 5, 6, 7, 8};
-
-            using var ms = new MemoryStream();
-            using var aes = new RijndaelManaged {KeySize = 256, BlockSize = 128};
-
-            var key = new Rfc2898DeriveBytes(passwordBytes, saltBytes, 1000);
-            aes.Key = key.GetBytes(aes.KeySize / 8);
-            aes.IV = key.GetBytes(aes.BlockSize / 8);
-
-            aes.Mode = CipherMode.CBC;
-
-            using (var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write))
-            {
-                cs.Write(bytesToBeDecrypted, 0, bytesToBeDecrypted.Length);
-                cs.Close();
-            }
-
-            var decryptedBytes = ms.ToArray();
-
-            return decryptedBytes;
         }
     }
 }

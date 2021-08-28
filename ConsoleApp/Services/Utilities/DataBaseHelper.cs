@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
-using Services.Utilities;
 
-namespace Data
+namespace Services.Utilities
 {
     public static class DataBaseHelper
     {
