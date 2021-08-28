@@ -1,9 +1,15 @@
 ﻿using System;
 
-namespace Services
+namespace Services.Finance
 {
-    public class Calculator
+    public class Calculator : ICalculator
     {
+
+        public Calculator()
+        {
+            
+        }
+        
         public int FirstNumber { get; set; }
         public int SecondNumber { get; set; }
 

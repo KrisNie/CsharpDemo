@@ -1,27 +1,23 @@
 using System;
 
-namespace Services
+namespace Services.Finance
 {
-    public class Demos
+    public class BankAccount : IBankAccount
     {
-    }
+        private ICalculator _calculator;
 
-    /// <summary>
-    /// Bank account demo class.
-    /// </summary>
-    public class BankAccount
-    {
-        private BankAccount()
+        public BankAccount(ICalculator calculator)
         {
+            _calculator = calculator;
         }
 
-        public BankAccount(string customerName, double balance)
+        public void Create(string customerName, double balance)
         {
             CustomerName = customerName;
             Balance = balance;
         }
 
-        public string CustomerName { get; }
+        public string CustomerName { get; private set; }
 
         public double Balance { get; private set; }
 
@@ -52,13 +48,5 @@ namespace Services
             Balance += amount;
         }
 
-        public static void Main()
-        {
-            var ba = new BankAccount("Mr. Bryan Walton", 11.99);
-
-            ba.Credit(5.77);
-            ba.Debit(11.22);
-            Console.WriteLine("Current balance is ${0}", ba.Balance);
-        }
     }
 }
