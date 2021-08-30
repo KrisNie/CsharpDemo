@@ -2,7 +2,7 @@ using System;
 
 namespace Services.Utilities
 {
-    public class EightLeggedEssay
+    public class TrashTalk
     {
         private static readonly Random Random = new Random();
 
@@ -10,7 +10,7 @@ namespace Services.Utilities
         /// EightLeggedEssayGenerator
         /// </summary>
         /// <returns></returns>
-        public static string EightLeggedEssayGenerator()
+        public static string TrashTalkGenerator()
         {
             var verbList =
                 @"皮实、复盘、赋能、加持、沉淀、倒逼、落地、串联、协同、反哺、兼容、包装、重组、履约、响应、量化、发力、布局、联动、细分、梳理、输出、加速、共建、共创、支撑、融合、解耦、聚合、集成、对标、对齐、聚焦、抓手、拆解、拉通、抽象、摸索、提炼、打通、吃透、迁移、分发、分层、封装、辐射、围绕、复用、渗透、扩展、开拓、给到、死磕、破圈"

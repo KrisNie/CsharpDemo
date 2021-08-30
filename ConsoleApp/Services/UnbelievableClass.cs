@@ -16,6 +16,7 @@ namespace Services
     {
         public static void UnbelievableMethod()
         {
+            Console.WriteLine(TrashTalk.TrashTalkGenerator());
             var aa = DateTime.TryParseExact("",
                 new[] { "yyyy-MM-ddTHH:mm:ss.ffK" },
                 new CultureInfo("en-US"),
