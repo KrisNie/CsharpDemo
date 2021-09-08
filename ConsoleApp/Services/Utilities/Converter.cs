@@ -68,7 +68,7 @@ namespace Services.Utilities
         }
 
 
-        public static Dictionary<string,string> SettleFileName(string fileName)
+        public static Dictionary<string, string> SettleFileName(string fileName)
         {
             var fileNameDictionary = new Dictionary<string, string>();
             var fileNameAnalysis = Regex.Split(fileName, @"(\.)|(-)")
@@ -76,19 +76,19 @@ namespace Services.Utilities
                 .ToList();
             if (fileNameAnalysis.Count == 5)
             {
-                fileNameDictionary.Add("TableName",fileNameAnalysis[0]);
-                fileNameDictionary.Add("Site",fileNameAnalysis[1]);
-                fileNameDictionary.Add("DBLevel",fileNameAnalysis[2]);
-                fileNameDictionary.Add("TaskNum",fileNameAnalysis[3]);
-                fileNameDictionary.Add("FileType",fileNameAnalysis[4]);
-                
+                fileNameDictionary.Add("TableName", fileNameAnalysis[0]);
+                fileNameDictionary.Add("Site", fileNameAnalysis[1]);
+                fileNameDictionary.Add("DBLevel", fileNameAnalysis[2]);
+                fileNameDictionary.Add("TaskNum", fileNameAnalysis[3]);
+                fileNameDictionary.Add("FileType", fileNameAnalysis[4]);
+
                 Console.WriteLine($"TableName: {fileNameAnalysis[0]}");
                 Console.WriteLine($"Site: {fileNameAnalysis[1]}");
                 Console.WriteLine($"DBLevel: {fileNameAnalysis[2]}");
                 Console.WriteLine($"TaskNum: {fileNameAnalysis[3]}");
                 Console.WriteLine($"FileType: {fileNameAnalysis[4]}");
             }
-            
+
             return fileNameDictionary;
         }
 
@@ -99,6 +99,27 @@ namespace Services.Utilities
 
             return rootElement.Elements()
                 .ToDictionary<XElement, string, object>(el => el.Name.LocalName, el => el.Value);
+        }
+
+        public static bool IsFileLocked(FileInfo file)
+        {
+            FileStream stream = null;
+            try
+            {
+                stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+
+            //file is not locked
+            return false;
         }
     }
 
@@ -216,7 +237,8 @@ namespace Services.Utilities
         /// <param name="arrange">Element or Attribute</param>
         /// <param name="rdelimit">Row separater</param>
         /// <param name="cdelimit">Column separater</param>
-        public static void Convert(string xmlfilepath, string csvpath, string datatag, DataArrange arrange,
+        public static void Convert(string xmlfilepath, string csvpath, string datatag,
+            DataArrange arrange,
             RowDelimit rdelimit, ColumnDelimit cdelimit)
         {
             try
@@ -268,7 +290,8 @@ namespace Services.Utilities
         /// <param name="cdelimit">Column separater</param>
         /// <param name="dbLevel"></param>
         /// <param name="timeStamp"></param>
-        private static void Convert(string xmlString, RowDelimit rdelimit, ColumnDelimit cdelimit, string dbLevel,
+        private static void Convert(string xmlString, RowDelimit rdelimit, ColumnDelimit cdelimit,
+            string dbLevel,
             string timeStamp)
         {
             try

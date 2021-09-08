@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Services.Finance;
 using Services.Utilities;
 
@@ -16,32 +19,43 @@ namespace Services
     {
         public static void UnbelievableMethod()
         {
-            Console.WriteLine(TrashTalk.TrashTalkGenerator());
-            var aa = DateTime.TryParseExact("",
-                new[] { "yyyy-MM-ddTHH:mm:ss.ffK" },
-                new CultureInfo("en-US"),
-                DateTimeStyles.None,
-                out var dateTime)
-                ? dateTime
-                : (object)"";
 
-            var fileNameList = new List<string>
-                { "u_m-DALS-86-1.csv", "u_m-DALS-86-2.csv", "xxx.txt" };
+            GetPi();
+        }
 
-            var a = fileNameList.AsEnumerable().Select(Converter.SettleFileName)
-                .Where(fileInfo => fileInfo.Count > 0)
-                .ToList();
+        private static void GetPi()
+        {
+            double pi = 0;
+            var i = 0;
 
-            // var xmlList = Converter.ConvertDataTableToXMl(new UnbelievableClass().GetDataSet().Tables[0]);
-            // Console.WriteLine(xmlList.First());
-            //
-            //
-            // var dictionary = Converter.ConvertXMlToDictionary(xmlList.First());
-            //
-            // foreach (var (key, value) in dictionary)
-            // {
-            //     Console.WriteLine($"Key = {key}, Value = {value}");
-            // }
+            while (Math.Round(pi) != 3.14159)
+            {
+                pi = 4 * Accuracy(i);
+                i++;
+            }
+
+            Console.WriteLine(pi);
+        }
+
+        private static double Accuracy(int n)
+        {
+            if (n == 0)
+            {
+                return 1;
+            }
+
+            var d;
+
+            if (n % 2 != 0)
+            {
+                d = 1 / -(2 * n + 1) + Accuracy(Math.Abs(n) - 1);
+            }
+            else
+            {
+                d = 1 / (2 * n + 1) + Accuracy(Math.Abs(n) - 1);
+            }
+
+            return d;
         }
 
         private static void TestForDependencyInjection()
@@ -49,13 +63,13 @@ namespace Services
             var ba = new CompositionRoot().GetService<IBankAccount>();
             if (ba == null) return;
             ba.Create("Mr. Bryan Walton", 11.99);
-
             ba.Credit(5.77);
             ba.Debit(11.22);
             Console.WriteLine("Current balance is ${0}", ba.Balance);
         }
 
         /// <summary>
+
         /// ReadCsvAndConvert2Xml
         /// </summary>
         private static void ReadCsvAndConvert2Xml()
@@ -74,6 +88,7 @@ namespace Services
         {
             var ds = new DataSet();
             try
+
             {
                 var builder = new SqlConnectionStringBuilder
                 {
