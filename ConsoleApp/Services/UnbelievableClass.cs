@@ -19,44 +19,9 @@ namespace Services
     {
         public static void UnbelievableMethod()
         {
-
-            GetPi();
         }
 
-        private static void GetPi()
-        {
-            double pi = 0;
-            var i = 0;
 
-            while (Math.Round(pi) != 3.14159)
-            {
-                pi = 4 * Accuracy(i);
-                i++;
-            }
-
-            Console.WriteLine(pi);
-        }
-
-        private static double Accuracy(int n)
-        {
-            if (n == 0)
-            {
-                return 1;
-            }
-
-            var d;
-
-            if (n % 2 != 0)
-            {
-                d = 1 / -(2 * n + 1) + Accuracy(Math.Abs(n) - 1);
-            }
-            else
-            {
-                d = 1 / (2 * n + 1) + Accuracy(Math.Abs(n) - 1);
-            }
-
-            return d;
-        }
 
         private static void TestForDependencyInjection()
         {
@@ -69,7 +34,6 @@ namespace Services
         }
 
         /// <summary>
-
         /// ReadCsvAndConvert2Xml
         /// </summary>
         private static void ReadCsvAndConvert2Xml()
