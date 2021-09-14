@@ -19,9 +19,8 @@ namespace Services
     {
         public static void UnbelievableMethod()
         {
+            PI.Pi();
         }
-
-
 
         private static void TestForDependencyInjection()
         {
