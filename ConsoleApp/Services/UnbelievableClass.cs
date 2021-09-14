@@ -16,23 +16,6 @@ namespace Services
     {
         public static void UnbelievableMethod()
         {
-            // Pi.GetPi(5);
-            throw new Exception();
-            var taskDataOutput = new List<Dictionary<string, string>>() {
-                new Dictionary<string, string> {
-                    {"co_num","test123"},
-                    {"co","newman"}
-                },
-                new Dictionary<string, string> {
-                    {"co_num","test123"},
-                    {"co","newman"}
-                }
-            };
-
-            Console.WriteLine(JsonConvert.SerializeObject(taskDataOutput));
-            
-            Console.WriteLine(XmlConvert.EncodeName("hrs##1"));
-            Console.WriteLine(XmlConvert.DecodeName("hrs_x0023__x0023_1"));
         }
 
         private static void TestForDependencyInjection()
