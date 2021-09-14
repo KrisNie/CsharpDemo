@@ -14,7 +14,7 @@ namespace Services
     {
         public static void UnbelievableMethod()
         {
-            PI.Pi();
+            Pi.GetPi(5);
         }
 
         private static void TestForDependencyInjection()
