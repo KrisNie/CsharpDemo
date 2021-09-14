@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Services.Finance;
 using Services.Utilities;
 
@@ -20,8 +15,6 @@ namespace Services
         public static void UnbelievableMethod()
         {
         }
-
-
 
         private static void TestForDependencyInjection()
         {
