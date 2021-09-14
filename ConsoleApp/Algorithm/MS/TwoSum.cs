@@ -1,9 +1,8 @@
-// https://leetcode-cn.com/problems/two-sum/
-
 using System.Collections.Generic;
 
 namespace Algorithm.MS
 {
+    // https://leetcode-cn.com/problems/two-sum/
     public class TwoSum
     {
         public int[] Sum1(int[] nums, int target)
