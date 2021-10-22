@@ -92,13 +92,43 @@ namespace Services.Utilities
             return fileNameDictionary;
         }
 
-        public static Dictionary<string, object> ConvertXMlToDictionary(string xmlString)
+        public static Dictionary<string, object> ConvertXmlToDictionary(string xmlString)
         {
             var xmlElement = XElement.Parse(xmlString);
             var rootElement = xmlElement.Descendants().First();
 
             return rootElement.Elements()
                 .ToDictionary<XElement, string, object>(el => el.Name.LocalName, el => el.Value);
+        }
+
+        public static List<string> ConvertDictionaryToXml(List<Dictionary<string, object>> rows)
+        {
+            var xmlList = new List<string>();
+            var builder = new StringBuilder();
+            var settings = new XmlWriterSettings
+            {
+                Indent = false,
+                NewLineChars = "",
+                ConformanceLevel = ConformanceLevel.Fragment,
+                OmitXmlDeclaration = false
+            };
+
+            foreach (var row in rows)
+            {
+                using (var xmlWriter = XmlWriter.Create(builder, settings))
+                {
+                    xmlWriter.WriteStartElement("Root");
+                    var el = new XElement("branch",
+                        row.Select(kv => new XElement(XmlConvert.EncodeName(kv.Key)!, kv.Value)));
+                    el.WriteTo(xmlWriter);
+                    xmlWriter.WriteEndElement();
+                }
+
+                xmlList.Add(builder.ToString());
+                builder.Clear();
+            }
+
+            return xmlList;
         }
 
         public static bool IsFileLocked(FileInfo file)
