@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Xml;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Services.Finance;
@@ -16,6 +15,7 @@ namespace Services
     {
         public static void UnbelievableMethod()
         {
+            
         }
 
         private static void TestForDependencyInjection()
