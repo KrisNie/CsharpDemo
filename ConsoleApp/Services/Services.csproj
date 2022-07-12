@@ -17,4 +17,8 @@
     <Folder Include="MessageQueue" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Collections\Collections.csproj" />
+  </ItemGroup>
+
 </Project>
