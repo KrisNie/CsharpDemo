@@ -60,7 +60,7 @@ namespace Services
 
         #region CircularBuffer Demo
 
-        private static void CircularBufferDemo(string[] args)
+        private static void CircularBufferDemo()
         {
             var buffer = new CircularBuffer<int>(5, new[] { 0, 1, 2 });
             Console.WriteLine("Initial buffer {0,1,2}:");
