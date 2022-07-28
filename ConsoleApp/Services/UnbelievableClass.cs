@@ -11,6 +11,7 @@ namespace Services
     {
         public static void UnbelievableMethod()
         {
+            Utilities.Excel2Json.ConvertExcel2Json();
         }
 
         #region Dependency Injection Demo
