@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Objects
+namespace Collections
 {
     public class ResponseResult
     {
@@ -28,6 +28,5 @@ namespace Objects
         /// data
         /// </summary>
         public object Data;
-
     }
 }

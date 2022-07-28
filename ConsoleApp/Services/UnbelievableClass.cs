@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
+using Collections;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Services.Finance;
-using Services.Utilities;
 
 namespace Services
 {
@@ -15,10 +11,12 @@ namespace Services
     {
         public static void UnbelievableMethod()
         {
-            
+            Utilities.Excel2Json.ConvertExcel2Json();
         }
 
-        private static void TestForDependencyInjection()
+        #region Dependency Injection Demo
+
+        private static void DependencyInjectionDemo()
         {
             var ba = new CompositionRoot().GetService<IBankAccount>();
             if (ba == null) return;
@@ -28,26 +26,14 @@ namespace Services
             Console.WriteLine("Current balance is ${0}", ba.Balance);
         }
 
-        /// <summary>
-        /// ReadCsvAndConvert2Xml
-        /// </summary>
-        private static void ReadCsvAndConvert2Xml()
-        {
-            var listXml = File.ReadLines(@"C:\Development\SubFolder\item_mst_DALS_77.csv").ToList();
-            var stringXml = JsonConvert.SerializeObject(listXml.Take(100));
-            stringXml = JsonConvert.ToString(stringXml);
-            ClipboardOperator.CopyToClipboard(stringXml);
-        }
+        #endregion
 
-        /// <summary>
-        /// Connect to database demo
-        /// </summary>
-        /// <returns></returns>
+        #region Database Access Demo
+
         private static DataSet GetDataSet()
         {
             var ds = new DataSet();
             try
-
             {
                 var builder = new SqlConnectionStringBuilder
                 {
@@ -70,5 +56,51 @@ namespace Services
 
             return ds;
         }
+
+        #endregion
+
+        #region CircularBuffer Demo
+
+        private static void CircularBufferDemo()
+        {
+            var buffer = new CircularBuffer<int>(5, new[] { 0, 1, 2 });
+            Console.WriteLine("Initial buffer {0,1,2}:");
+            PrintBuffer(buffer);
+
+            for (int i = 3; i < 7; i++)
+            {
+                buffer.PushBack(i);
+            }
+
+            Console.WriteLine("\nAfter adding a 7 elements to a 5 elements capacity buffer:");
+            PrintBuffer(buffer);
+
+            buffer.PopFront();
+            Console.WriteLine("\nbuffer.PopFront():");
+            PrintBuffer(buffer);
+
+            buffer.PopBack();
+            Console.WriteLine("\nbuffer.PopBack():");
+            PrintBuffer(buffer);
+
+            for (int i = 2; i >= 0; i--)
+            {
+                buffer.PushFront(i);
+            }
+
+            Console.WriteLine("\nbuffer.PushFront() {2,1,0} respectively:");
+            PrintBuffer(buffer);
+
+            buffer.Clear();
+            Console.WriteLine("\nbuffer.Clear():");
+            PrintBuffer(buffer);
+        }
+
+        private static void PrintBuffer(CircularBuffer<int> buffer)
+        {
+            Console.WriteLine($"{{{string.Join(",", buffer.ToArray())}}}");
+        }
+
+        #endregion
     }
 }
