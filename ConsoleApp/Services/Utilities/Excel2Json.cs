@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Services.Utilities
@@ -20,6 +21,12 @@ namespace Services.Utilities
         public string uniqueName { get; init; }
         public string displayName { get; init; }
         public int displaySequence { get; init; }
+        public List<Dependencies> dependencies { get; set; }
+    }
+
+    public record Dependencies
+    {
+        public string irn { get; init; }
     }
 
     public static class Excel2Json
@@ -27,7 +34,7 @@ namespace Services.Utilities
         public static string ConvertExcel2Json()
         {
             var pathToExcel =
-                @"C:\Users\knie\OneDrive - Infor\Documents\Infor\Tasks\T2V\Feature Jira ID CSIB-61292\Modules.xlsx";
+                @"C:\Users\knie\OneDrive - Infor\Documents\Infor\Tasks\T2V\Feature Jira ID CSIB-61292\Excel file to Json\Modules.xlsx";
             var sheets = new List<string>
             {
                 "Financial Management",
@@ -61,6 +68,11 @@ namespace Services.Utilities
                 var configurationDisplaySequence = -4;
                 while (reader.Read())
                 {
+                    var dependence = reader.GetValue(4).ToString()?.Split("\n")
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .Select(x => new Dependencies{ irn = x })
+                        .ToList();
+
                     var configuration = new Configuration
                     {
                         irn = reader.GetValue(1).ToString(),
@@ -68,6 +80,11 @@ namespace Services.Utilities
                         displayName = reader.GetValue(3).ToString(),
                         displaySequence = configurationDisplaySequence++
                     };
+
+                    if (dependence != null)
+                    {
+                        configuration.dependencies = dependence;
+                    }
 
                     configurations.Add(configuration);
                 }
@@ -87,7 +104,8 @@ namespace Services.Utilities
                 modules.Add(module);
             }
 
-            Console.WriteLine(JsonConvert.SerializeObject(modules));
+            var json = JsonConvert.SerializeObject(modules);
+            Console.WriteLine(json);
 
             return string.Empty;
         }
