@@ -67,7 +67,6 @@ namespace Services.Utilities
             return xmlList;
         }
 
-
         public static Dictionary<string, string> SettleFileName(string fileName)
         {
             var fileNameDictionary = new Dictionary<string, string>();
