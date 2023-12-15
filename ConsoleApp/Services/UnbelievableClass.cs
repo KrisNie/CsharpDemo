@@ -11,14 +11,13 @@ using Collections;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Finance;
 
-namespace Services;
-
-public static class UnbelievableClass
+namespace Services
 {
-    public static void UnbelievableMethod()
+    public static class UnbelievableClass
     {
-        
-    }
+        public static void UnbelievableMethod()
+        {
+        }
 
     #region Dependency Injection Demo
 
