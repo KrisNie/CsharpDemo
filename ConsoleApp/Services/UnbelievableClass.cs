@@ -15,8 +15,6 @@ namespace Services
     {
         public static void UnbelievableMethod()
         {
-            var i = "AOE".IndexOf("A", 0, StringComparison.OrdinalIgnoreCase);
-            Console.WriteLine(i);
         }
 
         #region Dependency Injection Demo
