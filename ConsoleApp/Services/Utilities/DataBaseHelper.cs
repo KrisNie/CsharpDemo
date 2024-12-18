@@ -64,7 +64,7 @@ namespace Services.Utilities
         {
             using var conn = new SqlConnection(ConnectionString);
             conn.Open();
-            var cmd = new SqlCommand {Connection = conn};
+            var cmd = new SqlCommand { Connection = conn };
             var tx = conn.BeginTransaction();
             cmd.Transaction = tx;
             try
@@ -91,7 +91,7 @@ namespace Services.Utilities
             using var connection = new SqlConnection(ConnectionString);
             var cmd = new SqlCommand(sqlString, connection);
             var myParameter =
-                new SqlParameter("@content", SqlDbType.NText) {Value = content};
+                new SqlParameter("@content", SqlDbType.NText) { Value = content };
             cmd.Parameters.Add(myParameter);
             try
             {
@@ -115,7 +115,7 @@ namespace Services.Utilities
             using var connection = new SqlConnection(ConnectionString);
             var cmd = new SqlCommand(sqlString, connection);
             var myParameter =
-                new SqlParameter("@fs", SqlDbType.Image) {Value = fs};
+                new SqlParameter("@fs", SqlDbType.Image) { Value = fs };
             cmd.Parameters.Add(myParameter);
             try
             {
@@ -224,7 +224,7 @@ namespace Services.Utilities
                 foreach (DictionaryEntry de in sqlStringList)
                 {
                     var cmdText = de.Key.ToString();
-                    var cmdParams = (SqlParameter[]) de.Value;
+                    var cmdParams = (SqlParameter[])de.Value;
                     PrepareCommand(cmd, conn, trans, cmdText, cmdParams);
                     cmd.ExecuteNonQuery();
                     cmd.Parameters.Clear();
@@ -299,7 +299,11 @@ namespace Services.Utilities
         }
 
 
-        private static void PrepareCommand(SqlCommand cmd, SqlConnection conn, SqlTransaction trans, string cmdText,
+        private static void PrepareCommand(
+            SqlCommand cmd,
+            SqlConnection conn,
+            SqlTransaction trans,
+            string cmdText,
             SqlParameter[] cmdParams)
         {
             if (conn.State != ConnectionState.Open)
@@ -328,7 +332,10 @@ namespace Services.Utilities
             return returnReader;
         }
 
-        public static DataSet RunProcedure(string storedProcName, IDataParameter[] parameters, string tableName)
+        public static DataSet RunProcedure(
+            string storedProcName,
+            IDataParameter[] parameters,
+            string tableName)
         {
             var sqlDa = new SqlDataAdapter();
             using SqlConnection connection = new SqlConnection(ConnectionString);
@@ -340,39 +347,88 @@ namespace Services.Utilities
             return dataSet;
         }
 
-        private static SqlCommand BuildQueryCommand(SqlConnection connection, string storedProcName,
+        private static SqlCommand BuildQueryCommand(
+            SqlConnection connection,
+            string storedProcName,
             IDataParameter[] parameters)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
-            var command = new SqlCommand(storedProcName, connection) {CommandType = CommandType.StoredProcedure};
+            var command = new SqlCommand(storedProcName, connection)
+                { CommandType = CommandType.StoredProcedure };
             foreach (var dataParameter in parameters)
             {
-                var parameter = (SqlParameter) dataParameter;
+                var parameter = (SqlParameter)dataParameter;
                 command.Parameters.Add(parameter);
             }
 
             return command;
         }
 
-        public static int RunProcedure(string storedProcName, IDataParameter[] parameters, out int rowsAffected)
+        public static int RunProcedure(
+            string storedProcName,
+            IDataParameter[] parameters,
+            out int rowsAffected)
         {
             using var connection = new SqlConnection(ConnectionString);
             connection.Open();
             var command = BuildIntCommand(connection, storedProcName, parameters);
             rowsAffected = command.ExecuteNonQuery();
-            var result = (int) command.Parameters["ReturnValue"].Value;
+            var result = (int)command.Parameters["ReturnValue"].Value;
             //Connection.Close();
             return result;
         }
 
-        private static SqlCommand BuildIntCommand(SqlConnection connection, string storedProcName,
+        private static SqlCommand BuildIntCommand(
+            SqlConnection connection,
+            string storedProcName,
             IDataParameter[] parameters)
         {
             SqlCommand command = BuildQueryCommand(connection, storedProcName, parameters);
-            command.Parameters.Add(new SqlParameter("ReturnValue",
-                SqlDbType.Int, 4, ParameterDirection.ReturnValue,
-                false, 0, 0, string.Empty, DataRowVersion.Default, null));
+            command.Parameters.Add(
+                new SqlParameter(
+                    "ReturnValue",
+                    SqlDbType.Int,
+                    4,
+                    ParameterDirection.ReturnValue,
+                    false,
+                    0,
+                    0,
+                    string.Empty,
+                    DataRowVersion.Default,
+                    null));
             return command;
+        }
+
+        #endregion
+
+
+        #region Database Access Demo
+
+        private static DataSet GetDataSet()
+        {
+            var ds = new DataSet();
+            try
+            {
+                var builder = new SqlConnectionStringBuilder
+                {
+                    DataSource = "LOCALHOST", UserID = "sa", Password = "123456Zz",
+                    InitialCatalog = "CSI10"
+                };
+
+                using var connection = new SqlConnection(builder.ConnectionString);
+                connection.Open();
+
+                var sql = "SELECT TOP 10 * FROM [dbo].item_mst;";
+
+                using var dataAdapter = new SqlDataAdapter(sql, connection);
+                dataAdapter.Fill(ds);
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return ds;
         }
 
         #endregion

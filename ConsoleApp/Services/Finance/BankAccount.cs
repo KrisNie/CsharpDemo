@@ -11,6 +11,8 @@ namespace Services.Finance
             _calculator = calculator;
         }
 
+        public string Age { get; private set; }
+
         public void Create(string customerName, double balance)
         {
             CustomerName = customerName;
@@ -47,6 +49,5 @@ namespace Services.Finance
 
             Balance += amount;
         }
-
     }
 }
