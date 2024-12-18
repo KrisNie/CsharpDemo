@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Services.Finance;
+using Services.Accounting;
 using TechTalk.SpecFlow;
 
 namespace Services.Specs.Steps
