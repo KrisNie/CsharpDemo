@@ -6,11 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ConsoleApp\Services\Services.csproj" />
+        <ProjectReference Include="..\ConsoleApp\Services\Services.csproj"/>
+        <ProjectReference Include="..\Services\Services.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Drivers" />
+        <Folder Include="Drivers"/>
     </ItemGroup>
 
     <ItemGroup>
