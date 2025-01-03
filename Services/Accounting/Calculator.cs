@@ -1,20 +1,12 @@
-﻿using System;
+﻿namespace Services.Accounting;
 
-namespace Services.Accounting
+public class Calculator : ICalculator
 {
-    public class Calculator : ICalculator
+    public int FirstNumber { get; set; }
+    public int SecondNumber { get; set; }
+
+    public int Add()
     {
-        public Calculator()
-        {
-        }
-
-        public int FirstNumber { get; set; }
-        public int SecondNumber { get; set; }
-
-        public int Add()
-        {
-            return FirstNumber + SecondNumber;
-            throw new NotImplementedException();
-        }
+        return FirstNumber + SecondNumber;
     }
 }

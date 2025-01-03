@@ -8,22 +8,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Properties\GreetingResources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>GreetingResources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
+        <EmbeddedResource Update="Properties\GreetingResources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>GreetingResources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Properties\GreetingResources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>GreetingResources.resx</DependentUpon>
-      </Compile>
+        <Compile Update="Properties\GreetingResources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>GreetingResources.resx</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>

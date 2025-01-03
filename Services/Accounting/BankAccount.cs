@@ -1,53 +1,35 @@
 using System;
 
-namespace Services.Accounting
+namespace Services.Accounting;
+
+public class BankAccount(ICalculator calculator) : IBankAccount
 {
-    public class BankAccount : IBankAccount
+    private ICalculator _calculator = calculator;
+    public string Age { get; private set; }
+    public string CustomerName { get; private set; }
+    public double Balance { get; private set; }
+
+    public void Create(string customerName, double balance)
     {
-        private ICalculator _calculator;
+        CustomerName = customerName;
+        Balance = balance;
+    }
 
-        public BankAccount(ICalculator calculator)
-        {
-            _calculator = calculator;
-        }
+    public void Debit(double amount)
+    {
+        if (amount > Balance) throw new ArgumentOutOfRangeException(nameof(amount));
 
-        public string Age { get; private set; }
+        if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount));
 
-        public void Create(string customerName, double balance)
-        {
-            CustomerName = customerName;
-            Balance = balance;
-        }
+        // intentionally incorrect code
+        // Balance += amount;
+        Balance -= amount;
+    }
 
-        public string CustomerName { get; private set; }
+    public void Credit(double amount)
+    {
+        if (amount < 0) throw new ArgumentOutOfRangeException(nameof(amount));
 
-        public double Balance { get; private set; }
-
-        public void Debit(double amount)
-        {
-            if (amount > Balance)
-            {
-                throw new ArgumentOutOfRangeException("amount");
-            }
-
-            if (amount < 0)
-            {
-                throw new ArgumentOutOfRangeException("amount");
-            }
-
-            // intentionally incorrect code
-            // Balance += amount;
-            Balance -= amount;
-        }
-
-        public void Credit(double amount)
-        {
-            if (amount < 0)
-            {
-                throw new ArgumentOutOfRangeException("amount");
-            }
-
-            Balance += amount;
-        }
+        Balance += amount;
     }
 }
