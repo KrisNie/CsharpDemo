@@ -1,4 +1,5 @@
 ﻿using System;
+using Collections.Algorithm;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Accounting;
 
@@ -9,6 +10,8 @@ public class UnbelievableClass
     public void UnbelievableMethod()
     {
         Console.WriteLine(nameof(UnbelievableMethod));
+        Console.WriteLine(Singleton.Instance.DateTime);
+        Console.WriteLine(Singleton.Instance.DateTime);
     }
 
     #region Dependency Injection Demo

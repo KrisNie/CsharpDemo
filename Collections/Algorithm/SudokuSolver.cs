@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace App.Algorithm;
+namespace Collections.Algorithm;
 
 // https://leetcode-cn.com/problems/sudoku-solver/
 public class SudokuSolver
@@ -18,7 +18,7 @@ public class SudokuSolver
             for (var j = 0; j < 9; j++)
                 if (board[i][j] == '.')
                 {
-                    _spaces.Add(new[] { i, j });
+                    _spaces.Add([i, j]);
                 }
                 else
                 {

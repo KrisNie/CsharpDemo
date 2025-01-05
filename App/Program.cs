@@ -1,13 +1,12 @@
 ﻿using Services;
 
-namespace App
+namespace App;
+
+internal class Program
 {
-    class Program
+    private static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            var executor = new UnbelievableClass();
-            executor.UnbelievableMethod();
-        }
+        var executor = new UnbelievableClass();
+        executor.UnbelievableMethod();
     }
 }

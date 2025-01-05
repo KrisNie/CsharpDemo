@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace App.Algorithm;
+namespace Collections.Algorithm;
 
 // https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/
 public class LetterCombinationsOfAPhoneNumber

@@ -1,4 +1,4 @@
-﻿namespace App.Algorithm;
+﻿namespace Collections.Algorithm;
 
 public class BinarySearch
 {

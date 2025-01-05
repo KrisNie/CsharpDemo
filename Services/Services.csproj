@@ -18,6 +18,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Collections\Collections.csproj"/>
+        <ProjectReference Include="..\Resource\Resource.csproj"/>
     </ItemGroup>
 
 </Project>

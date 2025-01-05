@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace App.Algorithm;
+namespace Collections.Algorithm;
 
 // https://leetcode-cn.com/problems/two-sum/
 public class TwoSum
@@ -27,7 +27,7 @@ public class TwoSum
         {
             var except = target - nums[i];
 
-            if (dic.ContainsKey(except)) return new[] { i, dic[except] };
+            if (dic.TryGetValue(except, out var value)) return [i, value];
 
             if (!dic.ContainsKey(nums[i])) dic.Add(nums[i], i);
         }
