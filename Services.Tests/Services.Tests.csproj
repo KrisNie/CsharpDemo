@@ -1,12 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
-
         <IsPackable>false</IsPackable>
-
         <RootNamespace>ServicesTests</RootNamespace>
-
         <LangVersion>default</LangVersion>
     </PropertyGroup>
 
@@ -18,7 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ConsoleApp\Services\Services.csproj" />
+      <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
-
 </Project>
