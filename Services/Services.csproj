@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <LangVersion>default</LangVersion>
@@ -20,5 +19,4 @@
         <ProjectReference Include="..\Collections\Collections.csproj"/>
         <ProjectReference Include="..\Resource\Resource.csproj"/>
     </ItemGroup>
-
 </Project>
