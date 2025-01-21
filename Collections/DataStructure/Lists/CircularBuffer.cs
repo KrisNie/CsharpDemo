@@ -32,18 +32,10 @@ public class CircularBuffer<T> : ICollection<T> where T : IComparable<T>
 
     public bool CanOverride { get; }
 
-    /// <summary>
-    /// Initializes a circular buffer with initial length of 10
-    /// </summary>
     public CircularBuffer(bool canOverride = true) : this(DefaultBufferLength, canOverride)
     {
     }
 
-    /// <summary>
-    /// Initializes a circular buffer with given length
-    /// </summary>
-    /// <param name="length">The length of the buffer</param>
-    /// <param name="canOverride"></param>
     public CircularBuffer(int length, bool canOverride = true)
     {
         if (length < 1)
@@ -52,16 +44,6 @@ public class CircularBuffer<T> : ICollection<T> where T : IComparable<T>
         _end = 0;
         _start = 0;
         CanOverride = canOverride;
-    }
-
-    public IEnumerator<T> GetEnumerator()
-    {
-        for (var i = _start; i < Count; i++) yield return _buffer[i];
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
     }
 
     public T this[int index]
@@ -168,6 +150,16 @@ public class CircularBuffer<T> : ICollection<T> where T : IComparable<T>
         }
 
         return true;
+    }
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        for (var i = _start; i < Count; i++) yield return _buffer[i];
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }
 

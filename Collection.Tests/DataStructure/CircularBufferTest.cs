@@ -1,18 +1,28 @@
 ﻿using Collections.DataStructure.Lists;
 
-namespace Collection.Tests.DataStructure;
+namespace Collections.Tests.DataStructure;
 
 public class CircularBufferTest
 {
     [Fact]
-    public void SetsFixedLength()
+    public void WhenReadTheItemUsingTheIndex_ThenReturnsTheItem()
     {
         // Arrange
         var circularBuffer = new CircularBuffer<byte>(3);
         // Act
         var length = circularBuffer.Capacity;
+        circularBuffer.Add(1);
+        circularBuffer.Add(2);
+        circularBuffer.Add(3);
         // Assert
-        Assert.Equal(3, length);
+        Assert.Multiple(
+            () =>
+            {
+                Assert.Equal(3, length);
+                Assert.Equal(1, circularBuffer[0]);
+                Assert.Equal(2, circularBuffer[1]);
+                Assert.Equal(3, circularBuffer[2]);
+            });
     }
 
     [Fact]
@@ -50,7 +60,7 @@ public class CircularBufferTest
     }
 
     [Fact]
-    public void ThrowsArgumentOutOfRangeExceptionForLengthLessThanOne()
+    public void WhenLengthLessThanOne_ThenThrowsArgumentOutOfRangeException()
     {
         // Arrange
         // Act
@@ -68,7 +78,7 @@ public class CircularBufferTest
     }
 
     [Fact]
-    public void ThrowsCircularBufferFullExceptionWhenInsertingInFullBuffer()
+    public void WhenInsertingInFullBuffer_ThenThrowsCircularBufferFullException()
     {
         // Arrange
         // Act

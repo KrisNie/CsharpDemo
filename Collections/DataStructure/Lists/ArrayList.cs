@@ -13,8 +13,8 @@ public class ArrayList<T> : IEnumerable<T>
 {
     private bool _defaultMaxCapacityIsX64 = true;
     private bool _isMaximumCapacityReached;
-    private readonly T[] _emptyArray = new T[0];
-    private const int _defaultCapacity = 8;
+    private readonly T[] _emptyArray = [];
+    private const int DefaultCapacity = 8;
     private T[] _collection;
     private int _size;
 
@@ -46,12 +46,9 @@ public class ArrayList<T> : IEnumerable<T>
 
     public T this[int index]
     {
-        get
-        {
-            if (index < 0 || index >= _size) throw new IndexOutOfRangeException();
-            return _collection[index];
-        }
-
+        get => index < 0 || index >= _size
+                ? throw new IndexOutOfRangeException()
+                : _collection[index];
         set
         {
             if (index < 0 || index >= _size) throw new IndexOutOfRangeException();
@@ -119,7 +116,7 @@ public class ArrayList<T> : IEnumerable<T>
 
     public bool Remove(T dataItem)
     {
-        int index = IndexOf(dataItem);
+        var index = IndexOf(dataItem);
         if (index < 0) return false;
         RemoveAt(index);
         return true;
@@ -144,19 +141,16 @@ public class ArrayList<T> : IEnumerable<T>
 
     public void Resize(int newSize, T defaultValue = default)
     {
-        int currentSize = Count;
-
+        var currentSize = Count;
         if (newSize < currentSize)
         {
             EnsureCapacity(newSize);
         }
         else if (newSize > currentSize)
         {
-            // Optimisation step.
             // This is just to avoid multiple automatic capacity changes.
             if (newSize > _collection.Length)
                 EnsureCapacity(newSize + 1);
-
             AddRange(Enumerable.Repeat(defaultValue, newSize - currentSize));
         }
     }
@@ -182,7 +176,6 @@ public class ArrayList<T> : IEnumerable<T>
 
     public bool Contains(T dataItem)
     {
-        // Null-value check
         if (dataItem == null)
         {
             for (var i = 0; i < _size; ++i)
@@ -191,8 +184,6 @@ public class ArrayList<T> : IEnumerable<T>
         }
         else
         {
-            // Construct a default equality comparer for this Type T
-            // Use it to get the equal match for the dataItem
             var comparer = EqualityComparer<T>.Default;
             for (var i = 0; i < _size; ++i)
                 if (comparer.Equals(_collection[i], dataItem))
@@ -209,7 +200,7 @@ public class ArrayList<T> : IEnumerable<T>
     private void EnsureCapacity(int minCapacity)
     {
         if (_collection.Length >= minCapacity || _isMaximumCapacityReached) return;
-        var capacity = _collection.Length == 0 ? _defaultCapacity : _collection.Length * 2;
+        var capacity = _collection.Length == 0 ? DefaultCapacity : _collection.Length * 2;
 
         var maxCapacity = _defaultMaxCapacityIsX64
             ? MaximumArrayLengthX64
@@ -252,7 +243,7 @@ public class ArrayList<T> : IEnumerable<T>
     {
         // Use the FindIndex to look through the collection
         // If the returned index != -1 then it does exist, otherwise it doesn't.
-        return (FindIndex(searchMatch) != -1);
+        return FindIndex(searchMatch) != -1;
     }
 
     public int FindIndex(Predicate<T> searchMatch)
@@ -298,15 +289,8 @@ public class ArrayList<T> : IEnumerable<T>
         // Check the bound of the starting index.
         if (startIndex < 0 || (uint)startIndex > (uint)_size)
             throw new IndexOutOfRangeException("Please pass a valid starting index.");
-
         // Check the bounds of count and starting index with respect to _size.
         if (count < 0 || startIndex > (_size - count)) throw new ArgumentOutOfRangeException();
-
-        // Everything is cool, start looking for the index
-        // Use the Array.IndexOf
-        // Array.IndexOf has a O(n) running time complexity, where: "n = count - size".
-        // Array.IndexOf uses EqualityComparer<T>.Default to return the index of element which loops
-        // ... over all the elements in the range [startIndex,count) in the array.
         return Array.IndexOf(_collection, dataItem, startIndex, count);
     }
 
@@ -319,7 +303,7 @@ public class ArrayList<T> : IEnumerable<T>
             if (searchMatch(_collection[i]))
                 return _collection[i];
         // Not found, return the default value of the type T.
-        return default(T);
+        return default;
     }
 
     public ArrayList<T> FindAll(Predicate<T> searchMatch)
@@ -392,18 +376,18 @@ public class ArrayList<T> : IEnumerable<T>
     /// <param name="newCapacity">New capacity.</param>
     private void ResizeCapacity(int newCapacity)
     {
-        if (newCapacity != _collection.Length && newCapacity > _size)
-            try
-            {
-                Array.Resize(ref _collection, newCapacity);
-            }
-            catch (OutOfMemoryException)
-            {
-                if (!_defaultMaxCapacityIsX64) throw;
-                _defaultMaxCapacityIsX64 = false;
-                EnsureCapacity(newCapacity);
-                throw;
-            }
+        if (newCapacity == _collection.Length || newCapacity <= _size) return;
+        try
+        {
+            Array.Resize(ref _collection, newCapacity);
+        }
+        catch (OutOfMemoryException)
+        {
+            if (!_defaultMaxCapacityIsX64) throw;
+            _defaultMaxCapacityIsX64 = false;
+            EnsureCapacity(newCapacity);
+            throw;
+        }
     }
 
     public IEnumerator<T> GetEnumerator()

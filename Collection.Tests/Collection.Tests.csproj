@@ -4,6 +4,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+        <AssemblyName>Collections.Tests</AssemblyName>
+        <RootNamespace>Collections.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

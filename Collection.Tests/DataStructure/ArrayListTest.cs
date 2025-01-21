@@ -1,6 +1,6 @@
 using Collections.DataStructure.Lists;
 
-namespace Collection.Tests.DataStructure;
+namespace Collections.Tests.DataStructure;
 
 public class ArrayListTest
 {
@@ -35,6 +35,19 @@ public class ArrayListTest
                 Assert.False(resultOfExists, "Wrong result!");
                 Assert.True(resultOfContains, "Wrong result!");
             });
+    }
+
+    [Fact]
+    public void WhenSetValueByIndex_ThenItemChanged()
+    {
+        // Arrange
+        var arrayList = new ArrayList<int> { 1, 2, 3 };
+        // Act
+        arrayList[0] = 4;
+        arrayList[1] = 5;
+        arrayList[2] = 6;
+        // Assert
+        Assert.Equal("[0] => 4\r\n[1] => 5\r\n[2] => 6\r\n", arrayList.ToHumanReadable());
     }
 
     // TODO: Make coverage better.
