@@ -3,8 +3,8 @@
 ## Linear:
 - [Skip List](https://github.com/KrisNie/CsharpDemo/blob/a06a8873e96e88ee7daf07bc2ae343eec7184221/Collections/DataStructure/Lists/SkipList.cs)
 - [Array List](https://github.com/KrisNie/CsharpDemo/blob/83222170877a76bd9bb1e2b805fbe2ae6d5405de/Collections/DataStructure/Lists/ArrayList.cs)
-- Stack
-- Queue
+- [Stack](https://github.com/KrisNie/CsharpDemo/blob/4530c6f1fabe8710b763e5e994358fbb35bcbb56/Collections/DataStructure/Lists/Stack.cs)
+- [Queue](https://github.com/KrisNie/CsharpDemo/blob/ea9715ed460612f30df537cde4e1f87aeff7888b/Collections/DataStructure/Lists/Queue.cs)
 - Single-Linked List
 - Double-Linked List
 ## Circular:
