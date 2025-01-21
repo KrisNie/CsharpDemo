@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Collections.DataStructure.Lists;
 
 /// <summary>
-/// A collection of elements with Pop & Push.
+/// A LIFO collection of elements with Pop & Push.
 /// </summary>
 /// <typeparam name="T"></typeparam>
 /// <see href="https://en.wikipedia.org/wiki/Stack_(abstract_data_type)" />
@@ -33,26 +33,28 @@ public class Stack<T> : IEnumerable<T> where T : IComparable<T>
 
     public Stack()
     {
-        // The internal collection is implemented as an array-based list.
-        // See the ArrayList.cs for the list implementation.
-        _collection = new ArrayList<T>();
+        _collection = [];
     }
 
 
     public Stack(int initialCapacity)
     {
         if (initialCapacity < 0) throw new ArgumentOutOfRangeException();
-
-        // The internal collection is implemented as an array-based list.
-        // See the ArrayList.cs for the list implementation.
         _collection = new ArrayList<T>(initialCapacity);
     }
 
+    /// <summary>
+    /// Pushes an element at the top of the stack.
+    /// </summary>
+    /// <param name="dataItem">Element to be inserted.</param>
     public void Push(T dataItem)
     {
         _collection.Add(dataItem);
     }
 
+    /// <summary>
+    /// Pops the top element from stack.
+    /// </summary>
     public T Pop()
     {
         if (Count <= 0) throw new Exception("Stack is empty.");

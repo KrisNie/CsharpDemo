@@ -17,11 +17,9 @@ public class ArrayList<T> : IEnumerable<T>
     private const int DefaultCapacity = 8;
     private T[] _collection;
     private int _size;
+    private const int MaximumArrayLengthX64 = 0X7FEFFFFF; //x64
+    private const int MaximumArrayLengthX86 = 0x8000000;  //x86
 
-    // The C# Maximum Array Length (before encountering overflow)
-    // Reference: http://referencesource.microsoft.com/#mscorlib/system/array.cs,2d2b551eabe74985
-    public const int MaximumArrayLengthX64 = 0X7FEFFFFF; //x64
-    public const int MaximumArrayLengthX86 = 0x8000000;  //x86
     public int Count => _size;
     public int Capacity => _collection.Length;
     public bool IsEmpty => Count == 0;
@@ -47,8 +45,8 @@ public class ArrayList<T> : IEnumerable<T>
     public T this[int index]
     {
         get => index < 0 || index >= _size
-                ? throw new IndexOutOfRangeException()
-                : _collection[index];
+            ? throw new IndexOutOfRangeException()
+            : _collection[index];
         set
         {
             if (index < 0 || index >= _size) throw new IndexOutOfRangeException();
@@ -353,7 +351,7 @@ public class ArrayList<T> : IEnumerable<T>
     /// <summary>
     /// Return a human-readable, multi-line, print-out (string) of this list.
     /// </summary>
-    /// <returns>The human-readable string.</returns>
+    /// <returns> The human-readable string.</returns>
     /// <param name="addHeader">
     /// If set to <c>true</c> a header with count and Type is added; otherwise, only elements are
     /// printed.
