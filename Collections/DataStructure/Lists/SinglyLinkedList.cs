@@ -186,7 +186,6 @@ public class SinglyLinkedList<T> : IEnumerable<T> where T : IComparable<T>
         _count = 0;
     }
 
-
     /// <summary>
     /// Gets a number of elements as specified by countOfElements, starting from the specified index.
     /// </summary>
@@ -292,10 +291,17 @@ public class SinglyLinkedList<T> : IEnumerable<T> where T : IComparable<T>
         return listAsString;
     }
 
-
     public IEnumerator<T> GetEnumerator()
     {
-        return new SLinkedListEnumerator(this);
+        var node = _firstNode;
+        while (node != null)
+        {
+            yield return node.Data;
+            node = node.Next;
+        }
+
+        // Alternative: IEnumerator class instance
+        // return new SinglyLinkedListEnumerator(this);
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -303,7 +309,7 @@ public class SinglyLinkedList<T> : IEnumerable<T> where T : IComparable<T>
         return GetEnumerator();
     }
 
-    private class SLinkedListEnumerator(SinglyLinkedList<T> list) : IEnumerator<T>
+    private class SinglyLinkedListEnumerator(SinglyLinkedList<T> list) : IEnumerator<T>
     {
         private SinglyLinkedListNode<T> _current = list.Head;
         private SinglyLinkedList<T> _doublyLinkedList = list;
