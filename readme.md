@@ -31,5 +31,5 @@
 
 # Unit Tests
 
-- [Collection.Tests](https://github.com/KrisNie/CsharpDemo/blob/2e0e1fc26dceea1fde58b4cee16a6c2c3007f11a/Collection.Tests)
-- [Services.Tests](https://github.com/KrisNie/CsharpDemo/blob/2e0e1fc26dceea1fde58b4cee16a6c2c3007f11a/Services.Tests)
+- [Collection.Tests](https://github.com/KrisNie/CsharpDemo/blob/master/Collection.Tests)
+- [Services.Tests](https://github.com/KrisNie/CsharpDemo/blob/master/Services.Tests)
