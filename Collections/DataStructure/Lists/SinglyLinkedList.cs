@@ -211,7 +211,7 @@ public class SinglyLinkedList<T> : IEnumerable<T> where T : IComparable<T>
     }
 
     /// <summary>
-    /// Sorts the entire list using Selection Sort.
+    /// Warning: Sorts the entire list using Selection Sort. Time Complexity: O(n^2).
     /// </summary>
     public virtual void SelectionSort()
     {
