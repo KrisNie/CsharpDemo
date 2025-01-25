@@ -1,6 +1,6 @@
 using System;
 
-namespace Collections.DataStructure.Lists;
+namespace Collections.DataStructure.List;
 
 public class SinglyLinkedListNode<T> : IComparable<SinglyLinkedListNode<T>> where T : IComparable<T>
 {

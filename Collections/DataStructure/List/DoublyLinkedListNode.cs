@@ -1,6 +1,6 @@
 using System;
 
-namespace Collections.DataStructure.Lists;
+namespace Collections.DataStructure.List;
 
 public class DoublyLinkedListNode<T> : IComparable<DoublyLinkedListNode<T>> where T : IComparable<T>
 {

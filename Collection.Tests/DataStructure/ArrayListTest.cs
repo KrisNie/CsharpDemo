@@ -1,4 +1,4 @@
-using Collections.DataStructure.Lists;
+using Collections.DataStructure.List;
 
 namespace Collections.Tests.DataStructure;
 

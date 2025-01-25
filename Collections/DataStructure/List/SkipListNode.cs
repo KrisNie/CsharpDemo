@@ -1,6 +1,6 @@
 using System;
 
-namespace Collections.DataStructure.Lists;
+namespace Collections.DataStructure.List;
 
 public sealed class SkipListNode<T> : IComparable<SkipListNode<T>> where T : IComparable<T>
 {

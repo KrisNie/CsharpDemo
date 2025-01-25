@@ -1,4 +1,4 @@
-using Collections.DataStructure.Lists;
+using Collections.DataStructure.List;
 using Xunit.Abstractions;
 
 namespace Collections.Tests.DataStructure;

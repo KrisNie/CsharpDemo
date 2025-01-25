@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Collections.DataStructure.Lists;
+namespace Collections.DataStructure.List;
 
 /// <summary>
 /// A FIFO collection of elements with Enqueue & Dequeue.

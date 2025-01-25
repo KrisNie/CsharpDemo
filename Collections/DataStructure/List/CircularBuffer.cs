@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Collections.DataStructure.Lists;
+namespace Collections.DataStructure.List;
 
 /// <summary>
 /// A single, fixed-size buffer as if it were connected end-to-end.

@@ -2,11 +2,11 @@ namespace Collections.Tests.DataStructure;
 
 public class StackTest
 {
-    private readonly Collections.DataStructure.Lists.Stack<int> _stack;
+    private readonly Collections.DataStructure.List.Stack<int> _stack;
 
     public StackTest()
     {
-        _stack = new Collections.DataStructure.Lists.Stack<int>();
+        _stack = new Collections.DataStructure.List.Stack<int>();
         _stack.Push(1);
         _stack.Push(2);
         _stack.Push(3);

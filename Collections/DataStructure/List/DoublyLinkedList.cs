@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Collections.DataStructure.Common;
 
-namespace Collections.DataStructure.Lists;
+namespace Collections.DataStructure.List;
 
 public class DoublyLinkedList<T> : IEnumerable<T> where T : IComparable<T>
 {

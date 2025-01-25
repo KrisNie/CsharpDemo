@@ -2,11 +2,11 @@ namespace Collections.Tests.DataStructure;
 
 public class QueueTest
 {
-    private readonly Collections.DataStructure.Lists.Queue<string> _queue;
+    private readonly Collections.DataStructure.List.Queue<string> _queue;
 
     public QueueTest()
     {
-        _queue = new Collections.DataStructure.Lists.Queue<string>();
+        _queue = new Collections.DataStructure.List.Queue<string>();
         _queue.Enqueue("aaa");
         _queue.Enqueue("bbb");
         _queue.Enqueue("ccc");
