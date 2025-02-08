@@ -5,14 +5,9 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class GreetingController
+public class GreetingController(ILogger<WeatherForecastController> logger)
 {
-    private readonly ILogger<WeatherForecastController> _logger;
-
-    public GreetingController(ILogger<WeatherForecastController> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<WeatherForecastController> _logger = logger;
 
     [HttpGet(Name = "greeting")]
     public string Greeting()
