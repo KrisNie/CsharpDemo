@@ -1,7 +1,7 @@
+using API.Data;
 using Microsoft.EntityFrameworkCore;
-using MinimalAPIs.Data;
 
-namespace MinimalAPIs.Extensions;
+namespace API.Extensions;
 
 public static class ServiceRegistrationExtension
 {

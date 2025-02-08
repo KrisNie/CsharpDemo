@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MinimalAPIs.Resource {
+namespace API.Resource {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace MinimalAPIs.Resource {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("APIs.Properties.GreetingResources", typeof(GreetingResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("API.Properties.GreetingResources", typeof(GreetingResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

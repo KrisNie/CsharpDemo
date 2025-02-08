@@ -1,7 +1,7 @@
+using API.Models;
 using Microsoft.EntityFrameworkCore;
-using MinimalAPIs.Models;
 
-namespace MinimalAPIs.Data;
+namespace API.Data;
 
 public class WeatherContext(DbContextOptions<WeatherContext> options) : DbContext(options)
 {

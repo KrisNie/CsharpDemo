@@ -1,8 +1,7 @@
-﻿using System.Reflection;
+﻿using API.Resource;
 using Microsoft.AspNetCore.Mvc;
-using MinimalAPIs.Resource;
 
-namespace MinimalAPIs.Controllers;
+namespace API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -15,7 +14,7 @@ public class GreetingController
         _logger = logger;
     }
 
-    [HttpGet(Name = "Greeting")]
+    [HttpGet(Name = "greeting")]
     public string Greeting()
     {
         return GreetingResources.Greeting;

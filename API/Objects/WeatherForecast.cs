@@ -1,4 +1,4 @@
-namespace MinimalAPIs.Objects;
+namespace API.Objects;
 
 public class WeatherForecast
 {

@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
-        <RootNamespace>MinimalAPIs</RootNamespace>
+        <RootNamespace>API</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

@@ -1,7 +1,7 @@
+using API.Objects;
 using Microsoft.AspNetCore.Mvc;
-using MinimalAPIs.Objects;
 
-namespace MinimalAPIs.Controllers;
+namespace API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -20,7 +20,7 @@ public class WeatherForecastController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
+    [HttpGet(Name = "weatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
         return Enumerable.Range(1, 5).Select(
