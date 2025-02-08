@@ -408,4 +408,4 @@ ASALocalRun/
 /ConsoleApp/Resource/Config.json
 /Web/appsettings.json
 /Web/appsettings.Development.json
-!/APIs/appsettings.json
+/APIs/appsettings.json
