@@ -403,9 +403,6 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
-/dotnetcore.mvc.demo/appsettings.json
-/dotnetcore.mvc.demo/appsettings.Development.json
 /ConsoleApp/Resource/Config.json
-/Web/appsettings.json
-/Web/appsettings.Development.json
 /APIs/appsettings.json
+/API/appsettings.Development.json
