@@ -1,5 +1,4 @@
-﻿using API.Resource;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
@@ -9,9 +8,14 @@ public class GreetingController(ILogger<WeatherForecastController> logger)
 {
     private readonly ILogger<WeatherForecastController> _logger = logger;
 
+    /// <summary>
+    /// Greetings to you.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet(Name = "greeting")]
+    [Produces("application/json")]
     public string Greeting()
     {
-        return GreetingResources.Greeting;
+        return "Hello World!";
     }
 }

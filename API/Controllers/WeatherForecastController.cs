@@ -16,6 +16,7 @@ public class WeatherForecastController(ILogger<WeatherForecastController> logger
     private readonly ILogger<WeatherForecastController> _logger = logger;
 
     [HttpGet(Name = "weatherForecast")]
+    [Produces("application/json")]
     public IEnumerable<WeatherForecast> Get()
     {
         return Enumerable.Range(1, 5).Select(

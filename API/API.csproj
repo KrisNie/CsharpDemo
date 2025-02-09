@@ -6,6 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>default</LangVersion>
         <RootNamespace>API</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,18 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Properties\GreetingResources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>GreetingResources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Properties\GreetingResources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>GreetingResources.resx</DependentUpon>
-      </Compile>
+      <_ContentIncludedByDefault Remove="Resources\Greeting.json" />
     </ItemGroup>
 
 </Project>

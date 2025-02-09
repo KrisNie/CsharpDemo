@@ -1,6 +1,9 @@
+using System.Reflection;
 using API.Context;
 using API.Handlers;
+using API.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace API.Extensions;
 
@@ -13,7 +16,25 @@ public static class ServiceRegistrationExtension
         services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(
+            options =>
+            {
+                options.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo
+                    {
+                        Version = "v1",
+                        Title = "Demo API",
+                        Description = "A demo API",
+                    });
+
+                options.DocumentFilter<JsonPatchDocumentFilter>();
+                // FIXME: using System.Reflection;
+                options.IncludeXmlComments(
+                    Path.Combine(
+                        AppContext.BaseDirectory,
+                        $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+            });
         AddDbContextPool(services, configuration);
         AddDependencies(services);
         services.AddCors(

@@ -10,11 +10,12 @@ public static class WeatherNavigator
 {
     public static void Navigate(WebApplication application)
     {
-        application.MapGet("/weathers", Read);
-        application.MapPost("/weathers", Create);
-        application.MapPut("/weathers/{city}/{date}", Update);
-        application.MapPatch("/weathers/{city}/{date}", Patch);
-        application.MapDelete("/weathers/{city}/{date}", Delete);
+        var group = application.MapGroup("weathers").WithTags("Weathers");
+        group.MapGet("", Read);
+        group.MapPost("", Create);
+        group.MapPut("/{city}/{date}", Update);
+        group.MapPatch("/{city}/{date}", Patch);
+        group.MapDelete("/{city}/{date}", Delete);
     }
 
     private static List<Weather> Read(IWeatherHandler weatherHandler)
@@ -27,6 +28,7 @@ public static class WeatherNavigator
         return weatherHandler.Create(weather).Result;
     }
 
+    [Produces("application/json")]
     private static IResult Update(
         IWeatherHandler weatherHandler,
         string city,
@@ -36,6 +38,16 @@ public static class WeatherNavigator
         return weatherHandler.Update(city, date, weather).Result;
     }
 
+    /// <summary>
+    /// Patch
+    /// </summary>
+    /// <param name="weatherHandler"></param>
+    /// <param name="city"></param>
+    /// <param name="date"></param>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [Produces("application/json-patch+json")]
+    [ProducesResponseType<Weather>(statusCode: 200)]
     private static async Task<IResult> Patch(
         IWeatherHandler weatherHandler,
         string city,
