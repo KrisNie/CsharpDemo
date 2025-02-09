@@ -14,10 +14,10 @@ public class Weather
     [MaxLength(80)]
     public required string City { get; set; }
 
+    [Column("date")] public required DateOnly Date { get; set; }
     [Column("temperature_low")] public int LowTemperature { get; set; }
     [Column("temperature_high")] public int HighTemperature { get; set; }
     [Column("precipitation")] public float Precipitation { get; set; }
-    [Column("date")] public required DateOnly Date { get; set; }
 
     /// <summary>
     /// Wind speed in kmph
