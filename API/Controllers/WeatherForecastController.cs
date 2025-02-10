@@ -1,4 +1,5 @@
 using API.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -27,5 +28,12 @@ public class WeatherForecastController(ILogger<WeatherForecastController> logger
                     Summary = Summaries[Random.Shared.Next(Summaries.Length)]
                 })
             .ToArray();
+    }
+
+    [HttpPatch(Name = "weatherForecast")]
+    [Produces("application/json-patch+json")]
+    public void Post([FromBody] JsonPatchDocument<WeatherForecast> weatherForecast)
+    {
+        throw new NotImplementedException();
     }
 }

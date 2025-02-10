@@ -23,12 +23,15 @@ public static class WeatherNavigator
         return weatherHandler.Read().Result;
     }
 
+    [ProducesResponseType(typeof(Weather), StatusCodes.Status201Created)]
     private static IResult Create(IWeatherHandler weatherHandler, [FromBody] Weather weather)
     {
         return weatherHandler.Create(weather).Result;
     }
 
     [Produces("application/json")]
+    [ProducesResponseType(typeof(Weather), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
     private static IResult Update(
         IWeatherHandler weatherHandler,
         string city,
@@ -47,7 +50,9 @@ public static class WeatherNavigator
     /// <param name="request"></param>
     /// <returns></returns>
     [Produces("application/json-patch+json")]
-    [ProducesResponseType<Weather>(statusCode: 200)]
+    [ProducesResponseType(typeof(Weather), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status404NotFound)]
     private static async Task<IResult> Patch(
         IWeatherHandler weatherHandler,
         string city,
@@ -63,6 +68,8 @@ public static class WeatherNavigator
             weatherPatch);
     }
 
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     private static IResult Delete(IWeatherHandler weatherHandler, string city, DateOnly date)
     {
         return weatherHandler.Delete(city, date).Result;
