@@ -11,7 +11,7 @@ public static class WeatherNavigator
     public static void Navigate(WebApplication application)
     {
         var group = application.MapGroup("weathers").WithTags("Weathers");
-        group.MapGet("", Read);
+        group.MapGet("", Read).RequireAuthorization();
         group.MapPost("", Create);
         group.MapPut("/{city}/{date}", Update);
         group.MapPatch("/{city}/{date}", Patch);

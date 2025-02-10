@@ -11,11 +11,12 @@ if (application.Environment.IsDevelopment())
 {
     application.UseSwagger();
     application.UseSwaggerUI();
+    // application.ApplyMigrations();
 }
 
 // Map the Endpoints
 application.EndpointsMap();
 application.UseHttpsRedirection();
 application.UseAuthorization();
-application.MapControllers();
+
 application.Run();
