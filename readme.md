@@ -22,6 +22,7 @@
 - [REST](https://en.wikipedia.org/wiki/REST)
 - [RESTful web API design](https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design)
 - [REST API Design Guidance](https://microsoft.github.io/code-with-engineering-playbook/design/design-patterns/rest-api-design-guidance/)
+- [JsonPatch.Net](https://docs.json-everything.net/patch/basics/)
 
 # [Dependency Injection](https://github.com/KrisNie/CsharpDemo/blob/master/Services/CompositionRoot.cs)
 
